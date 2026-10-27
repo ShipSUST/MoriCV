@@ -1,0 +1,49 @@
+<!doctype html><html data-sany-anonymous="date-v1"><meta charset="utf-8"><title>Sany anonymous observed controls</title>
+<style>body{font:16px sans-serif}.form-item{margin:12px}input{min-height:24px}.common-unmodeled-layer{position:fixed;top:5px;right:5px;background:white;padding:10px;border:1px solid;z-index:10}</style>
+<main class="form-root"></main><script src="/chinalife-zhiye-controls.js"></script><script>
+for(const key of Object.keys(specs))delete specs[key];
+specs.basic=['个人信息',[['region','户口所在地','region'],['ethnicity','民族','constant',['虚构民族甲','虚构民族乙']]]];
+specs.awards=['获奖情况',[['hasAwards','是否有获奖经历','radio'],['start','获奖时间','day'],['competition','竞赛名称'],['name','奖项名称'],['awardCategory','奖项类型','choice',['奖学金','竞赛']],['type','奖项级别','choice',['国际级','国家级','省市级','校级','院系级','班级']],['grade','奖项等级']]];
+ChinalifeFixture.reset();ChinalifeFixture.add('awards');
+for(const node of ChinalifeFixture.nodes){if(node.id==='11')node.label='匿名省';if(node.id==='111')node.label='示例市';if(node.id==='1111')node.label='虚构区';}
+ChinalifeFixture.field('basic','region').fixture.setAllLevelDisplay(false);
+for(const section of document.querySelectorAll('[data-anonymous-section]')){
+ const forms=Array.from(section.querySelectorAll('div.form[id]')),ux=forms[0].parentElement;
+ for(const form of forms){form.querySelector('.form-part-body').className='form-part';ux.append(form);}
+ for(const record of section.querySelectorAll('.record'))if(!record.contains(ux))record.remove();
+}
+for(const item of document.querySelectorAll('.form-item')){
+ const label=item.querySelector('label'),title=document.createElement('div'),control=document.createElement('div');
+ title.className='form-item__title form-item__title--right';control.className='form-item__control';title.append(label);
+ for(const child of Array.from(item.children))control.append(child);item.append(title,control);
+ const select=item.querySelector('.phoenix-select');if(!select)continue;
+ select.classList.add('phoenix-select--editable','phoenix-select--borderColorable','phoenix-select--large');
+ select.querySelector('input').classList.add('phoenix-select__input--large','phoenix-select__input--unText');
+ const wrapper=document.createElement('div');wrapper.className='phoenix-unmodeled-layer block';
+ wrapper.innerHTML='<div class="phoenix-unmodeled-layer__inner"><div class="phoenix-unmodeled-layer__protect"><div class="phoenix-unmodeled-layer__content phoenix-unmodeled-layer__content--block"></div></div></div>';
+ wrapper.querySelector('.phoenix-unmodeled-layer__content').append(select);control.append(wrapper);
+ if(new URLSearchParams(location.search).get('case')==='delayed'){
+  const click=select.onclick;select.onclick=event=>{
+   click(event);const content=document.querySelector('.common-unmodeled-layer .list-data-container,.common-unmodeled-layer .area-data-container');
+   if(content){content.style.display='none';setTimeout(()=>{content.style.display='';},180);}
+  };
+ }
+}
+globalThis.SanyFixtureReady=true;
+document.addEventListener('SANY_CONTROLS_FIXTURE_FAULT',event=>{const data=JSON.parse(event.detail);if('multiRegion' in data)ChinalifeFixture.multiRegionMode=data.multiRegion;});
+// The portable control double has mutable props but no renderer. Give its
+// current nodes a committed root; real React ownership is checked separately
+// with the saved public Phoenix components, never inferred from this shim.
+document.addEventListener('MORI_CV_CHINALIFE_READ',event=>{
+ const target=event.target,layer=target.closest?.('.common-unmodeled-layer');
+ const input=target.matches?.('.phoenix-select__input')?target:layer?.fixtureOwner;
+ if(!input?.__reactFiberAnonymous)return;
+ const currentLayer=Array.from(document.querySelectorAll('.common-unmodeled-layer')).find(popup=>popup.fixtureOwner===input);
+ const root={tag:3,stateNode:null,child:null};root.stateNode={current:root};
+ const attached=input.__reactFiberAnonymous,existing=attached.return;
+ const owner=existing?.stateNode?.containerRef?existing:{memoizedProps:{},stateNode:null};
+ owner.return=root;root.child=owner;
+ const frames=[attached,...Array.from(currentLayer?.querySelectorAll('*')||[]).filter(node=>node.__reactFiberAnonymous).map(node=>node.__reactFiberAnonymous)];
+ owner.child=frames[0];frames.forEach((fiber,index)=>{fiber.return=owner;fiber.sibling=frames[index+1]||null;});
+},true);
+</script><script src="/src/content/sany.js"></script><script src="/src/content/chinalife-readback.js"></script></html>

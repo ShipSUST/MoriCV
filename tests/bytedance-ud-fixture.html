@@ -1,0 +1,31 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>Anonymous UD component fixture</title>
+<style>
+body{font:16px sans-serif;padding:20px}.applyFormModuleWrapper-windows{border:1px solid #ddd;padding:12px}
+[class^=apply-form-array-card__]{padding:12px;border:1px solid #aaa;margin:12px}.ud-formily-item{padding:8px}
+input{width:230px;padding:8px}.ud__select{display:inline-block}.ud__select__selector__selectItem{min-height:20px}
+.ud__select__dropdown,.ud__dropdown{background:white;position:fixed;top:30px;right:20px;border:1px solid;padding:12px;z-index:100}
+.ud__select__list__item,.ud__picker-month-panel-cell{padding:8px;cursor:pointer}.ud__picker-month-panel-cell{display:inline-block}
+.throne-biz-date-range-picker-input{display:inline-block}.ud__input__clear-icon,.ud__select__selector__clear{cursor:pointer;margin:8px}
+</style><body>
+<!-- All records and option values here are fictional. Only public component structure is modeled. -->
+<div class="applyFormModuleWrapper-windows"><div class="applyFormModuleWrapper-left"><p>教育经历</p><p>请填写教育经历</p></div>
+<div class="applyFormModuleWrapper-right"><div id="formily-item-education_list"><div id="rows"></div><button id="add">添加</button></div></div></div>
+<script>
+const rows=document.querySelector('#rows');let popup=null;
+const combinedDegree=new URLSearchParams(location.search).get('ud')==='combined-degree';
+function close(){popup?.remove();popup=null}
+function field(label,key,control){const root=document.createElement('div');root.className='ud-formily-item';root.dataset.formFieldI18nName=label;root.dataset.formFieldName=key;root.innerHTML='<div class="ud-formily-item-label"><label>'+label+'</label></div>';root.append(control);return root}
+function input(){const el=document.createElement('input');el.className='ud__native-input';return el}
+function select(options){const wrap=document.createElement('div');wrap.className='ud__select';wrap.innerHTML='<div class="ud__select__selector"><div class="ud__select__selector__content"><div class="ud__select__selector__selectItem"></div><div class="ud__select__selector__search"><input role="combobox" type="search" readonly class="ud__native-input"></div></div><span class="ud__select__selector__clear">清空</span></div>';
+ const el=wrap.querySelector('input'),shown=wrap.querySelector('.ud__select__selector__selectItem');
+ el.onclick=()=>{close();popup=document.createElement('div');popup.className='ud__select__dropdown';for(const text of options){const option=document.createElement('div');option.className='ud__select__list__item';option.textContent=text;option.onclick=()=>{shown.textContent=text;el.value='';close()};popup.append(option)}document.body.append(popup)};
+ wrap.querySelector('.ud__select__selector__clear').onclick=()=>{shown.textContent='';el.value=''};el.onkeydown=e=>{if(e.key==='Escape')close()};return wrap}
+function range(){const wrap=document.createElement('div');wrap.className='throne-biz-date-range-picker-wrapper';for(let index=0;index<2;index++){const part=document.createElement('div');part.className='throne-biz-date-range-picker-input';const el=input(),clear=document.createElement('span');clear.className='ud__input__clear-icon';clear.textContent='清空';clear.onclick=()=>{el.value='';el.dataset.committed=''};part.append(el,clear);wrap.append(part);
+ el.oninput=()=>{el.value=el.dataset.committed||''};el.onkeydown=e=>{if(e.key==='Escape')close()};el.onclick=()=>{close();let year=Number(el.value.slice(0,4))||2026;popup=document.createElement('div');popup.className='ud__dropdown';const panel=document.createElement('div');panel.className='throne-biz-date-range-picker-panel';popup.append(panel);document.body.append(popup);
+ const render=()=>{panel.innerHTML='<div class="ud__picker-panel-header"><span class="ud__picker-panel-header-btn">'+year+'年</span><button><span data-icon="LeftBoldOutlined">上年</span></button><button><span data-icon="RightBoldOutlined">下年</span></button></div>';const buttons=panel.querySelectorAll('button');buttons[0].onclick=()=>setTimeout(()=>{year--;render()},8);buttons[1].onclick=()=>setTimeout(()=>{year++;render()},8);for(let month=1;month<=12;month++){const cell=document.createElement('div');cell.className='ud__picker-month-panel-cell';cell.innerHTML='<div class="ud__picker__cell-interactive-area">'+String(month).padStart(2,'0')+'月</div>';cell.onclick=()=>{el.value=year+'-'+String(month).padStart(2,'0');el.dataset.committed=el.value;close()};panel.append(cell)}};render()};}return wrap}
+function add(){const row=document.createElement('div');row.className='apply-form-array-card__anonymous';const group=document.createElement('div');group.className='register-form-group-wrapper';
+ group.append(field('起止时间','start_end_time',range()),field('学历类型','degree_type',select(['全日制','非全日制'])),field('学校名称','school',input()),field(combinedDegree?'学历/学位':'学历','degree',select(combinedDegree?['硕士研究生','本科']:['硕士','本科'])),field('学院','college',input()),field('专业','field_of_study',input()));
+ if(!combinedDegree)group.append(field('学位','academic_degree',select(['硕士','学士'])));
+ const remove=document.createElement('button');remove.textContent='删除';remove.onclick=()=>row.remove();row.append(group,remove);rows.append(row)}
+document.querySelector('#add').onclick=add;add();
+</script></body></html>

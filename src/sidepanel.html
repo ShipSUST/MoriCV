@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mori CV · 简历助手</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="panel-page">
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">YOUR RESUME, READY</p>
+        <h1>Mori CV</h1>
+        <p class="subtle">本地资料，轻松填写</p>
+      </div>
+      <button id="open-options" class="icon-button" type="button" title="打开资料设置" aria-label="打开资料设置">⚙</button>
+    </header>
+
+    <main>
+      <section class="action-card" aria-labelledby="fill-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">当前网页</p>
+            <h2 id="fill-title">智能填写</h2>
+          </div>
+          <span id="site-badge" class="badge neutral">待扫描</span>
+        </div>
+        <p class="helper-text">先在网页中点击输入框，再从下方资料旁点击“填入”；也可一键填写确定性高的空字段。</p>
+        <div id="profile-status" class="access-panel" aria-live="polite" hidden></div>
+        <div id="access-panel" class="access-panel" aria-live="polite" hidden>
+          <div>
+            <strong id="access-title">网页访问权限</strong>
+            <p id="access-description">正在检查当前网站权限…</p>
+          </div>
+          <button id="grant-site" class="button access-button" type="button">授权当前网站</button>
+        </div>
+        <div id="target-status" class="target-status" aria-live="polite">
+          <span class="target-dot" aria-hidden="true"></span>
+          <span>等待你点击网页中的输入框</span>
+        </div>
+        <div class="primary-actions">
+          <button id="fill-page" class="button primary" type="button">一键填写当前简历</button>
+          <button id="scan-page" class="button secondary" type="button">仅扫描</button>
+        </div>
+        <div class="secondary-actions">
+          <button id="undo-fill" class="button undo" type="button">撤销本次填写</button>
+          <button id="verify-page" class="button verify" type="button">重新扫描并核验</button>
+        </div>
+
+        <div class="switch-list">
+          <label class="switch-row danger-row">
+            <span>
+              <strong>覆盖已有内容</strong>
+              <small>每次填写前仍会二次确认</small>
+            </span>
+            <input id="overwrite-existing" type="checkbox">
+          </label>
+        </div>
+
+        <div id="result" class="result-box" aria-live="polite">
+          <p>点击“仅扫描”查看当前页面能识别的字段。</p>
+        </div>
+      </section>
+
+      <section class="library-section" aria-labelledby="library-title">
+        <div class="section-heading sticky-heading">
+          <div>
+            <p class="eyebrow">个人资料库</p>
+            <h2 id="library-title">点选填入或复制</h2>
+          </div>
+          <span id="entry-count" class="count"></span>
+        </div>
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input id="search" type="search" placeholder="搜索姓名、学校、项目、附件…" autocomplete="off">
+        </label>
+        <div id="profile-list" class="profile-list"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status"></div>
+    <script type="module" src="sidepanel.js"></script>
+  </body>
+</html>

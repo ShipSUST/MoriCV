@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN" data-resume-helper-fixture="component-libs">
+<head>
+  <meta charset="utf-8">
+  <title>组件库下拉与日期面板 Fixture</title>
+  <style>
+    body { font-family: sans-serif; padding: 24px; }
+    section { border: 1px solid #ddd; border-radius: 8px; margin: 14px 0; padding: 12px; }
+    h2 { font-size: 16px; margin: 0 0 8px; }
+    .row { margin: 8px 0; display: flex; align-items: center; gap: 8px; }
+    .row > label { width: 150px; color: #555; }
+    /* 四个库的浮层用完全不同的类名，检验通用兜底是否认得出来。 */
+    .ant-select-dropdown { position: absolute; z-index: 20; background: white; border: 1px solid #888; }
+    .ant-select-item-option { padding: 4px 10px; cursor: pointer; list-style: none; }
+    .el-select-dropdown { position: absolute; z-index: 20; background: white; border: 1px solid #888; }
+    .el-select-dropdown__item { padding: 4px 10px; cursor: pointer; list-style: none; }
+    [class*=arco-select-popup] { position: absolute; z-index: 20; background: white; border: 1px solid #888; }
+    [class*=arco-select-option] { padding: 4px 10px; cursor: pointer; }
+    /* tdesign 用一个通用的 popper，没有库专属类名——这正是兜底要覆盖的情况。 */
+    .custom-popper { position: absolute; z-index: 20; background: white; border: 1px solid #888; }
+    .custom-popper .opt { padding: 4px 10px; cursor: pointer; }
+    .scheme-trigger { border: 1px solid #bbb; border-radius: 4px; padding: 4px 10px; cursor: pointer; min-width: 160px; }
+    .scheme-value { color: #222; }
+    .date-panel { position: fixed; right: 30px; z-index: 30; background: white; border: 1px solid #888; padding: 8px; }
+    .date-panel[data-kind="ant"] { top: 30px; }
+    .date-panel[data-kind="element"] { top: 240px; }
+    .cell { display: inline-block; padding: 3px 7px; cursor: pointer; }
+    .cell[data-selected="true"] { background: #dff2e8; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <section>
+    <h2>四种下拉（点击后异步渲染，延时不固定）</h2>
+    <div class="row"><label>Ant 学历</label><span class="ant-select" id="ant-degree" data-options="本科|硕士|博士"><input class="ant-select-input" role="combobox" readonly aria-label="学历"><span class="ant-select-selection-item"></span></span></div>
+    <div class="row"><label>element 期望工作城市</label><span class="el-select" id="el-city" data-options="北京|上海|广州"><input class="el-select-input" role="combobox" readonly aria-label="期望工作城市"><span class="el-select__value"></span></span></div>
+    <div class="row"><label>arco 外语名称</label><span class="arco-select select-container" id="arco-language" data-options="英语|日语|德语"><input class="arco-select-input" role="combobox" readonly aria-label="外语名称"><span class="arco-select-value selected-value"></span></span></div>
+    <div class="row"><label>tdesign 政治面貌</label><span class="custom-popper-trigger select-container" id="td-political" data-options="中共党员|共青团员|群众"><input class="td-input" role="combobox" readonly aria-label="政治面貌"><span class="scheme-value selected-value"></span></span></div>
+  </section>
+
+  <section>
+    <h2>两种日期面板（同页共存，检验是否落到正确的那个）</h2>
+    <div class="row"><label>Ant 毕业时间</label><input id="ant-graduation" class="ant-day" type="text" readonly placeholder="毕业时间"></div>
+    <div class="row"><label>自研入职时间</label><input id="custom-onboard" class="month-cell" type="text" readonly placeholder="入职时间"></div>
+  </section>
+
+  <pre id="events"></pre>
+  <script>
+    const log = (message) => { document.querySelector("#events").textContent += message + "\n"; };
+    // 渲染延时故意每次都不同：固定 sleep 会抓空，观察式等待才不会。
+    const jitter = () => 60 + Math.floor(Math.random() * 420);
+    let open = null;
+    function closeAll() {
+      document.querySelectorAll(".ant-select-dropdown, .el-select-dropdown, [class*=arco-select-popup], .custom-popper").forEach((n) => n.remove());
+      open = null;
+    }
+    function openDropdown(host) {
+      if (open === host) { closeAll(); return; }
+      closeAll();
+      open = host;
+      const options = String(host.dataset.options || "").split("|").filter(Boolean);
+      const id = host.id;
+      const isAnt = id.startsWith("ant");
+      const isEl = id.startsWith("el");
+      const isArco = id.startsWith("arco");
+      const wrap = document.createElement("div");
+      wrap.className = isAnt ? "ant-select-dropdown" : isEl ? "el-select-dropdown" : isArco ? "arco-select-popup" : "custom-popper";
+      if (isAnt) { const ul = document.createElement("ul"); ul.className = "ant-select-item-option-group"; wrap.append(ul); }
+      for (const value of options) {
+        const item = document.createElement("div");
+        item.className = isAnt ? "ant-select-item-option" : isEl ? "el-select-dropdown__item" : isArco ? "arco-select-option" : "opt";
+        item.textContent = value;
+        item.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const target = isAnt ? ".ant-select-selection-item" : isEl ? ".el-select__value" : isArco ? ".arco-select-value" : ".scheme-value";
+          host.querySelector(target).textContent = value;
+          log(`select:${id}=${value}`);
+          closeAll();
+        });
+        wrap.append(item);
+      }
+      document.body.append(wrap);
+      const rect = host.getBoundingClientRect();
+      wrap.style.left = `${rect.left}px`;
+      wrap.style.top = `${rect.bottom + 2}px`;
+    }
+    document.addEventListener("click", (event) => {
+      const host = event.target.closest(".ant-select, .el-select, .arco-select, .custom-popper-trigger");
+      if (host) {
+        event.stopPropagation();
+        setTimeout(() => openDropdown(host), jitter());
+        return;
+      }
+      if (!event.target.closest(".ant-select-dropdown, .el-select-dropdown, [class*=arco-select-popup], .custom-popper")) closeAll();
+    });
+
+    // ── 日期面板 ────────────────────────────────────────────────
+    const YEARS = ["2030", "2029", "2028", "2027", "2026", "2025", "2024"];
+    const MONTHS = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+    let openPanel = null;
+    function closePanels() {
+      document.querySelectorAll(".date-panel").forEach((n) => n.remove());
+      openPanel = null;
+    }
+    function showPanel(input, kind) {
+      closePanels();
+      openPanel = { input, kind };
+      const panel = document.createElement("div");
+      panel.className = "date-panel";
+      panel.dataset.kind = kind;
+      const title = document.createElement("div");
+      title.textContent = kind === "ant" ? "Ant 日期面板" : "自研日期面板";
+      panel.append(title);
+      const state = { year: "", month: "" };
+      const yearRow = document.createElement("div");
+      for (const year of YEARS) {
+        const cell = document.createElement("span");
+        cell.className = "cell";
+        cell.dataset.year = year;
+        cell.textContent = year;
+        cell.addEventListener("click", (event) => {
+          event.stopPropagation();
+          state.year = year;
+          log(`${kind}:year=${year}`);
+        });
+        yearRow.append(cell);
+      }
+      const monthRow = document.createElement("div");
+      for (const month of MONTHS) {
+        const cell = document.createElement("span");
+        cell.className = "cell";
+        cell.dataset.month = month;
+        cell.textContent = month;
+        cell.addEventListener("click", (event) => {
+          event.stopPropagation();
+          state.month = month;
+          log(`${kind}:month=${month}`);
+        });
+        monthRow.append(cell);
+      }
+      const confirm = document.createElement("button");
+      confirm.textContent = "确定";
+      confirm.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (!state.year || !state.month) return;
+        input.value = `${state.year}-${state.month}`;
+        log(`${kind}:commit=${input.value}`);
+        closePanels();
+      });
+      panel.append(yearRow, monthRow, confirm);
+      document.body.append(panel);
+    }
+    for (const input of document.querySelectorAll("#ant-graduation, #custom-onboard")) {
+      input.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const kind = input.id === "ant-graduation" ? "ant" : "custom";
+        setTimeout(() => showPanel(input, kind), jitter());
+      });
+    }
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".date-panel") && !event.target.closest("#ant-graduation, #custom-onboard")) closePanels();
+    });
+  </script>
+</body>
+</html>

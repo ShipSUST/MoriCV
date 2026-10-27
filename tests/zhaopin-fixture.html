@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="zh-CN" data-resume-helper-fixture="zhaopin">
+<head>
+  <meta charset="utf-8">
+  <title>匿名智联组件拓印夹具</title>
+  <style>
+    body { font: 14px/1.5 system-ui, sans-serif; margin: 24px; color: #263238; }
+    [hidden] { display: none !important; }
+    #modules { display: grid; grid-template-columns: 210px 1fr; gap: 20px; }
+    nav button { display: block; width: 100%; margin: 4px 0; text-align: left; }
+    button { cursor: pointer; padding: 5px 10px; }
+    .apply-module { border: 1px solid #cbd5e1; padding: 18px; }
+    .el-form-item { margin: 12px 0; display: flex; gap: 12px; }
+    .el-form-item__label { width: 155px; flex-shrink: 0; }
+    .el-form-item__content { min-width: 320px; }
+    input, textarea { padding: 6px; min-width: 230px; border: 1px solid #b0bec5; }
+    textarea { width: 450px; min-height: 75px; }
+    .el-input { display: inline-flex; align-items: center; }
+    .el-input__suffix button { border: 0; background: transparent; }
+    .el-select-dropdown, .el-picker-panel, .el-autocomplete-suggestion { position: fixed; top: 90px; right: 25px; z-index: 40; padding: 12px; background: white; border: 1px solid #90a4ae; box-shadow: 0 4px 12px #0002; }
+    .el-select-dropdown__item { list-style: none; cursor: pointer; padding: 6px 16px; }
+    .el-picker-panel { width: 335px; }
+    .el-date-picker__header { display: flex; gap: 4px; align-items: center; justify-content: space-between; }
+    .el-date-picker__header-label { cursor: pointer; border: 0; background: white; }
+    .el-picker-panel table { width: 100%; text-align: center; border-collapse: collapse; margin-top: 14px; }
+    .el-picker-panel td { height: 35px; cursor: pointer; }
+    .el-picker-panel a.cell { display: block; padding: 6px; }
+    .prev-month, .next-month, .disabled { color: #bdc5ca; }
+    .disabled { cursor: not-allowed !important; }
+    .available:hover, a.cell:hover { background: #e3f2fd; }
+    .el-dialog__wrapper { position: fixed; inset: 0; z-index: 50; background: #0005; display: grid; place-items: center; }
+    .el-dialog { width: 560px; padding: 18px; background: white; }
+    .s-region__levels { display: flex; gap: 8px; min-height: 170px; }
+    .s-region__level { flex: 1; border: 1px solid #ddd; padding: 8px; }
+    .s-region__option { display: block; width: 100%; margin: 3px 0; }
+    .saved-card { padding: 8px; border-bottom: 1px solid #ddd; }
+    .fixture-banner { background: #f1f5f9; padding: 10px; }
+  </style>
+</head>
+<body>
+  <p class="fixture-banner">仅本地匿名组件仿真；保存/附件均为内存模拟，不代表真实网站保存。</p>
+  <div id="modules"><nav aria-label="简历模块"></nav><main></main></div>
+  <output id="fixture-status" aria-live="polite"></output>
+  <script>
+  'use strict';
+  // Public field labels and component fingerprints only. No captured page data.
+  const f = (key,label,publicType,extra = {}) => ({ key,label,publicType,
+    type: ({ 1:'text',2:'textarea',3:'select',6:'date',7:'region',8:'remote',9:'remote',10:'file',11:'file',15:'number',31:'region',81:'select' })[publicType], ...extra });
+  const yesNo = [{ value:'1',label:'是' },{ value:'2',label:'否' }];
+  const degreeCondition = { key:'education_degree', values:['1','10','12','3','4','5'] };
+  // Required flags were observed only for the explicit fields below. Unlisted
+  // flags are unknown, not evidence that the production field is optional.
+  const MODULES = [
+    { key:'person_info',title:'个人信息',loop:0,limit:1,fields:[
+      f('name','姓名',1),f('id_card_type','证件号码类型',3),f('id_card','证件号码',1),f('birth','出生日期',6),
+      f('gender','性别',3,{ options:[{value:'1',label:'男'},{value:'2',label:'女'}] }),f('FIELD1000','姓名全拼',1),
+      f('nation','民族',81,{required:false}),f('healthiness_status','健康状况',3,{options:[{value:'1',label:'良好'},{value:'3',label:'其他'}]}),
+      f('healthiness_history','病史信息',1,{condition:{key:'healthiness_status',values:['3']}}),f('marital_status','婚姻状况',3),f('politics_bg','政治面貌',3),f('FIELD1001','加入党团时间',6),
+      f('nowlocated_city','现居住城市',31,{required:true,level:'district'}),f('FIELD1002_city','籍贯',7,{required:true,level:'city'}),f('hukou_city','入学前户口所在地',7,{required:true,level:'city'}),
+      f('stature','身高(cm)',15,{maxLength:3}),f('national_code','手机区号',1),f('avoirdupois','体重(kg)',15,{maxLength:3}),f('mobile_number','手机号码',1),f('email','电子邮箱',1),f('address','通信地址',1),f('emergency_number','紧急联系电话',1)
+    ]},
+    { key:'MODULE102',title:'投递信息',loop:0,limit:1,fields:[f('FIELD1030_city','可参加现场面试的城市',7,{required:true,level:'city'}),f('FIELD1031','是否接受岗位调剂',3,{options:yesNo}),f('FIELD1032','是否有大学专科经历',3,{options:yesNo}),f('FIELD1033','是否接受简历跨单位推荐',3,{options:yesNo})] },
+    { key:'education_experience',title:'教育经历',collection:'educations',loop:5,limit:5,fields:[
+      f('school_name','学校名称',8,{required:true,options:['匿名学校甲','匿名学校乙','匿名学校丙']}),f('edu_date_start','入学时间',6),f('edu_date_end','毕业时间',6),
+      f('education_degree','学历',3,{options:[{value:'1',label:'博士研究生'},{value:'3',label:'硕士研究生'},{value:'4',label:'本科'},{value:'5',label:'专科'},{value:'10',label:'示例学历十'},{value:'12',label:'示例学历十二'}]}),
+      f('education_degree_direction','研究方向',1,{condition:{key:'education_degree',values:['1','3','10']}}),f('is_upgraded','是否专升本',3,{options:yesNo,condition:{key:'education_degree',values:['4']}}),
+      f('college_name','院系',1,{condition:degreeCondition}),f('major_name','专业',9,{required:true,condition:degreeCondition,options:['匿名专业甲','匿名专业乙','匿名专业丙']}),f('main_course','专业课程',1,{condition:degreeCondition}),
+      f('FIELD1004','成绩院系中排名',3),f('FIELD1052','学位',3,{options:['硕士','学士','博士']}),f('FIELD1053','学位类型',3),f('edu_type','受教育类型',3,{options:['全日制','非全日制']}),
+      f('FIELD1005','是否在海外学习',3,{options:yesNo}),f('FIELD1006','学习国家/地区',1,{condition:{key:'FIELD1005',values:['1']}})
+    ]},
+    { key:'work_ecperience',title:'实习/工作经历',collection:'internships',loop:5,limit:5,fields:[
+      f('FIELD1007','公司名称',1),f('FIELD1008','在职开始时间',6),f('FIELD1009','在职结束时间',6),f('job_type','工作类型',3),f('FIELD1010','当前月薪',3),f('FIELD1011','职位名称',1),f('work_description','工作描述',2,{maxLength:3000}),f('is_references','是否有证明人',3,{options:yesNo}),
+      f('anonymous_referee_name','证明人姓名',1,{syntheticKey:true,condition:{key:'is_references',values:['1']}}),f('anonymous_referee_relation','证明人关系',1,{syntheticKey:true,condition:{key:'is_references',values:['1']}}),
+      f('references_position','证明人职务',1,{condition:{key:'is_references',values:['1']}}),f('references_company','证明人单位',1,{condition:{key:'is_references',values:['1']}}),f('references_contact','证明人联系方式',1,{condition:{key:'is_references',values:['1']}})
+    ]},
+    { key:'MODULE100',title:'项目经历',collection:'projects',loop:5,limit:5,fields:[f('FIELD1012','项目名称',1),f('FIELD1013','项目开始时间',6),f('FIELD1014','项目结束时间',6),f('FIELD1015','职务',1),f('FIELD1016','项目职责',1),f('FIELD1017','项目简述',1)] },
+    { key:'MODULE101',title:'奖励活动',collection:'awards',loop:2,limit:2,fields:[
+      f('FIELD1018','奖学金',3,{options:yesNo}),f('FIELD1019','奖学金级别',3,{condition:{key:'FIELD1018',values:['1']}}),f('FIELD1020','奖学金等级',3,{condition:{key:'FIELD1018',values:['1']}}),f('FIELD1021','是否学生干部',3,{options:yesNo}),
+      f('FIELD1022','干部级别',3,{condition:{key:'FIELD1021',values:['1']}}),f('FIELD1023','干部名称',3,{condition:{key:'FIELD1021',values:['1']}}),f('FIELD1024','开始时间',6,{condition:{key:'FIELD1021',values:['1']}}),f('FIELD1025','结束时间',6,{condition:{key:'FIELD1021',values:['1']}}),f('FIELD1026','受到奖励',1,{condition:{key:'FIELD1021',values:['1']}}),f('FIELD1027','专业资格证书',1),f('FIELD1028','校内活动',1),f('FIELD1029','社会实践',1)
+    ]},
+    { key:'other_info',title:'自我评价',loop:0,limit:1,fields:[f('self_assessment','自我评价',2,{maxLength:500})] },
+    { key:'MODULE103',title:'技能&爱好',loop:5,limit:5,fields:[f('FIELD1043','英语等级',3),f('FIELD1044','英语分数',1),f('FIELD1045','英语证书',3),f('FIELD1034','获得时间',6),f('FIELD1046','等级/分数',1),f('FIELD1047','语言能力',3),f('FIELD1048','听说能力',3),f('FIELD1049','读写能力',3),f('FIELD1050','其他技能',1),f('FIELD1051','个人爱好',1)] },
+    { key:'MODULE104',title:'家庭关系',collection:'relationships',loop:5,limit:5,fields:[f('FIELD1035','家属姓名',1),f('FIELD1036','家属关系',1),f('FIELD1037','家属工作单位',1),f('FIELD1038','家属职位',1)] },
+    { key:'MODULE105',title:'是否有亲属在中国联通系统内工作',loop:5,limit:5,fields:[f('FIELD1055','是否有亲属在中国联通系统内工作',3,{options:yesNo}),f('FIELD1042','与本人关系',3,{condition:{key:'FIELD1055',values:['1']}}),f('FIELD1039','亲属姓名',1,{condition:{key:'FIELD1055',values:['1']}}),f('FIELD1040','工作部门',1,{condition:{key:'FIELD1055',values:['1']}}),f('FIELD1041','职务',1,{condition:{key:'FIELD1055',values:['1']}})] },
+    { key:'MODULE108',title:'其他说明',loop:0,limit:1,fields:[f('FIELD1065','本人承诺真实准确',3,{options:yesNo}),f('FIELD1066','是否有违法、违纪或其他不良行为',3,{options:yesNo}),f('FIELD1067','个人受惩处情况',2)] },
+    { key:'photo_attach',title:'附件',loop:0,limit:1,fields:[f('work_photo_path','证件照',10,{accept:'.jpg,.jpeg,.gif,.png',maxBytes:4 * 1024 * 1024}),f('attach_path','简历附件',11,{accept:'.rar,.zip,.xls,.doc,.xlsx,.docx,.pdf',maxBytes:4 * 1024 * 1024})] }
+  ];
+  const MONTH_LABELS = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+  const DATE_PAIRS = [
+    ['job_date_start','job_date_end'], ['project_date_start','project_date_end'],
+    ['position_start_time','position_end_time'], ['edu_date_start','edu_date_end']
+  ];
+  const REGION_TREE = [
+    { label: '示例省甲', children: [{ label: '示例市甲', children: [{ label: '示例区甲' },{ label: '示例区乙' }] },{ label: '示例市乙', children: [{ label: '示例区丙' }] }] },
+    { label: '示例省乙', children: [{ label: '示例市丙', children: [{ label: '示例区丁' }] }] },
+    // Fictional punctuation labels exercise strict value readback, not site data.
+    { label: 'Region-A', children: [{ label: 'City (B)', children: [{ label: 'Area.C' }] }] }
+  ];
+  const state = { active: null, draft: null, dirty: false, saved: {}, saveCount: 0, cancelCount: 0, commits: [], pendingNavigation: null, uid: 0 };
+  const blank = module => Object.fromEntries(module.fields.map(field => [field.key, field.type === 'file' ? [] : '']));
+  const byKey = key => MODULES.find(module => module.key === key);
+  const iso = (year, month, day) => `${String(year).padStart(4,'0')}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  const parseDate = value => {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ''));
+    return match ? match.slice(1).map(Number) : null;
+  };
+  function closeLayers(preserveInput = null) {
+    document.querySelectorAll('[data-fixture-popup]').forEach(node => node.remove());
+    document.querySelectorAll('input[aria-expanded=true]').forEach(input => {
+      input.setAttribute('aria-expanded','false');
+      if (input !== preserveInput && input.closest('.el-select')) input.value = state.draft?.[input.name] || '';
+    });
+  }
+  function displayValue(key, value) {
+    if (!state.active) return;
+    for (const item of document.querySelectorAll('.apply-form .el-form-item')) {
+      if (item.dataset.fieldKey !== key) continue;
+      const input = item.querySelector('input:not([type=file]),textarea');
+      if (input) input.value = typeof value === 'string' ? value : '';
+      const display = item.querySelector('.selected-value');
+      if (display) display.textContent = typeof value === 'string' ? value : '';
+    }
+  }
+  function commit(key, value, source = 'control') {
+    state.draft[key] = value; state.dirty = true;
+    state.commits.push({ module: state.active.key, record: state.active.index, key, value, source });
+    displayValue(key, value);
+    const pair = DATE_PAIRS.find(keys => keys.includes(key));
+    if (pair && parseDate(state.draft[pair[0]]) && parseDate(state.draft[pair[1]]) && state.draft[pair[0]] > state.draft[pair[1]]) {
+      const opposite = pair[0] === key ? pair[1] : pair[0];
+      state.draft[opposite] = ''; displayValue(opposite,'');
+      state.commits.push({ module: state.active.key, record: state.active.index, key: opposite, value: '', source: 'paired-clear' });
+    }
+    renderConditions();
+  }
+  function requestOpen(key, index = 0) {
+    if (state.dirty) {
+      state.pendingNavigation = { key, index };
+      closeLayers();
+      const wrapper = document.createElement('div'); wrapper.className = 'el-dialog__wrapper'; wrapper.dataset.fixturePopup = 'navigation';
+      const dialog = document.createElement('div'); dialog.className = 'el-dialog';
+      dialog.innerHTML = '<p>当前模块有未保存内容。</p><button type="button" data-stay>继续编辑</button><button type="button" data-discard>放弃修改并切换</button>';
+      dialog.querySelector('[data-stay]').onclick = () => { state.pendingNavigation = null; wrapper.remove(); };
+      dialog.querySelector('[data-discard]').onclick = () => { const next = state.pendingNavigation; state.dirty = false; state.pendingNavigation = null; wrapper.remove(); openModule(next.key,next.index); };
+      wrapper.append(dialog); document.body.append(wrapper); return false;
+    }
+    openModule(key,index); return true;
+  }
+  function conditionValue(key) {
+    const field = byKey(state.active?.key)?.fields.find(item => item.key === key);
+    const selected = (field?.options || []).find(option => typeof option === 'object' && option.label === state.draft[key]);
+    return selected?.value || state.draft[key];
+  }
+  function renderConditions() {
+    const module = byKey(state.active?.key); if (!module) return;
+    for (const field of module.fields) {
+      if (!field.condition) continue;
+      const item = Array.from(document.querySelectorAll('.apply-form .el-form-item')).find(node => node.dataset.fieldKey === field.key);
+      if (item) item.hidden = !field.condition.values.includes(conditionValue(field.condition.key));
+    }
+  }
+  function openModule(key, index = 0) {
+    const module = byKey(key); if (!module) throw new Error(`Unknown anonymous module: ${key}`);
+    closeLayers();
+    state.saved[key] ||= [blank(module)];
+    if (index >= module.limit) throw new Error('Anonymous module loop limit');
+    state.active = { key, index, uid: ++state.uid, editing:true };
+    state.draft = structuredClone(state.saved[key][index] || blank(module)); state.dirty = false;
+    const main = document.querySelector('main'); main.replaceChildren();
+    const section = document.createElement('div'); section.className = 'apply-module'; section.dataset.moduleKey = key;
+    const body = document.createElement('div'); body.className = 'apply-module__body'; section.append(body);
+    const titleBox = document.createElement('div'); titleBox.className = 'form-content--title-box';
+    const heading = document.createElement('h6'); heading.className = 'form-content--title'; heading.textContent = module.title; titleBox.append(heading); body.append(titleBox);
+    if (module.limit > 1) {
+      const add = document.createElement('div'); add.className = 'icon-box icon-box-only icon-box-disabled'; add.dataset.addRecord = '';
+      if (state.saved[key].length >= module.limit) add.classList.add('disabled');
+      const text = document.createElement('span'); text.className = 'icon-text'; text.textContent = '添加'; add.append(text);
+      add.onclick = () => { if (!document.querySelector('.apply-form') && state.saved[key].length < module.limit) requestOpen(key,state.saved[key].length); }; titleBox.append(add);
+    }
+    const cards = document.createElement('div'); cards.className = 'saved-cards';
+    state.saved[key].forEach((record,i) => {
+      const card = document.createElement('div'); card.className = 'saved-card';
+      const button = document.createElement('button'); button.type = 'button'; button.textContent = `编辑第 ${i + 1} 条`; button.onclick = () => requestOpen(key,i); card.append(button); cards.append(card);
+    });
+    body.append(cards);
+    const formWrapper = document.createElement('div'); formWrapper.className = 'apply-module__form'; body.append(formWrapper);
+    const form = document.createElement('form'); form.className = 'apply-form el-form'; form.dataset.recordIndex = String(index); form.dataset.recordUid = String(state.active.uid);
+    form.onsubmit = event => event.preventDefault();
+    for (const field of module.fields) form.append(createField(field));
+    const footer = document.createElement('div'); footer.className = 'apply-form__actions';
+    const save = document.createElement('button'); save.type = 'button'; save.textContent = '保存'; save.dataset.fixtureSave = '';
+    save.onclick = () => {
+      const missing = module.fields.filter(field => field.required === true
+        && (!field.condition || field.condition.values.includes(conditionValue(field.condition.key))) && !state.draft[field.key]);
+      if (missing.length) { document.querySelector('#fixture-status').textContent = '已采证必填字段尚未填写'; return; }
+      state.saved[key][index] = structuredClone(state.draft); state.saveCount++; state.dirty = false;
+      document.querySelector('#fixture-status').textContent = '匿名内存模块已保存'; showSummary(key);
+    };
+    const cancel = document.createElement('button'); cancel.type = 'button'; cancel.textContent = '取消'; cancel.dataset.fixtureCancel = '';
+    cancel.onclick = () => { state.cancelCount++; state.dirty = false; showSummary(key); };
+    footer.append(save,cancel); form.append(footer); formWrapper.append(form); main.append(section); renderConditions();
+  }
+  function showSummary(key) {
+    closeLayers(); const module = byKey(key); state.active = {key,index:0,uid:++state.uid,editing:false}; state.draft = null;
+    const section = document.createElement('div'); section.className = 'apply-module'; section.dataset.moduleKey = key;
+    const body = document.createElement('div'); body.className = 'apply-module__body'; section.append(body);
+    const titleBox = document.createElement('div'); titleBox.className = 'form-content--title-box';
+    const heading = document.createElement('h6'); heading.className = 'form-content--title'; heading.textContent = module.title; titleBox.append(heading); body.append(titleBox);
+    if (module.loop) {
+      const add = document.createElement('div'); add.className = 'icon-box icon-box-only'; add.dataset.addRecord = '';
+      if (state.saved[key].length >= module.limit) add.classList.add('disabled');
+      const text = document.createElement('span'); text.className = 'icon-text'; text.textContent = '添加'; add.append(text);
+      add.onclick = () => { if (!add.classList.contains('disabled')) requestOpen(key,state.saved[key].length); }; titleBox.append(add);
+    }
+    state.saved[key].forEach((record,index) => {
+      const card = document.createElement('div'); card.className = 'saved-card';
+      const text = document.createElement('p'); text.textContent = Object.values(record).filter(value => typeof value === 'string' && value).join(' / '); card.append(text);
+      const edit = document.createElement('button'); edit.type = 'button'; edit.textContent = '编辑'; edit.onclick = () => requestOpen(key,index); card.append(edit); body.append(card);
+    });
+    document.querySelector('main').replaceChildren(section);
+  }
+  function createField(field) {
+    const item = document.createElement('div'); item.className = 'el-form-item'; item.dataset.fieldKey = field.key;
+    const label = document.createElement('label'); label.className = 'el-form-item__label'; label.textContent = field.label; item.append(label);
+    if (field.required === true) label.classList.add('is-required');
+    item.dataset.requiredEvidence = field.required === undefined ? 'unobserved' : String(field.required);
+    const content = document.createElement('div'); content.className = 'el-form-item__content'; item.append(content);
+    const id = `anon-${state.active.uid}-${field.key}`; label.htmlFor = id;
+    if (field.type === 'date') {
+      const host = document.createElement('div'); host.className = 'apply-form-date'; host.dataset.fieldKey = field.key; host.dataset.fieldName = field.key;
+      const picker = document.createElement('div'); picker.className = 'el-date-editor el-input el-date-editor--date';
+      const input = document.createElement('input'); input.id = id; input.name = field.key; input.type = 'text'; input.className = 'el-input__inner'; input.readOnly = true;
+      input.placeholder = '选择日期'; input.value = state.draft[field.key]; input.setAttribute('aria-controls',`${id}-panel`); input.setAttribute('aria-expanded','false');
+      input.addEventListener('input',() => { input.value = state.draft[field.key]; }); input.addEventListener('change',() => { input.value = state.draft[field.key]; });
+      input.onclick = () => openCalendar(input,field.key); picker.append(input);
+      const suffix = document.createElement('span'); suffix.className = 'el-input__suffix';
+      const clear = document.createElement('button'); clear.type = 'button'; clear.className = 'el-input__icon el-icon-circle-close'; clear.setAttribute('aria-label','清空'); clear.textContent = '×';
+      clear.onclick = event => { event.stopPropagation(); if (input.dataset.rejectClear !== '1') commit(field.key,'','clear'); closeLayers(); };
+      suffix.append(clear); picker.append(suffix); host.append(picker); content.append(host); return item;
+    }
+    if (field.type === 'select' || field.type === 'remote') {
+      const fieldWrapper = document.createElement('div');
+      fieldWrapper.className = field.publicType === 8 ? 'apply-form-school' : field.publicType === 9 ? 'apply-form-major' : 'apply-form-select';
+      const select = document.createElement('div'); select.className = 'el-select';
+      const wrapper = document.createElement('div'); wrapper.className = 'el-input';
+      const input = document.createElement('input'); input.id = id; input.name = field.key; input.className = 'el-input__inner'; input.type = 'text'; input.readOnly = field.type !== 'remote'; input.setAttribute('role','combobox'); input.setAttribute('aria-controls',`${id}-list`); input.setAttribute('aria-expanded','false'); input.placeholder = field.type === 'remote' ? '输入关键词检索' : '请选择'; input.value = state.draft[field.key];
+      const display = document.createElement('span'); display.className = 'selected-value'; display.textContent = state.draft[field.key]; display.hidden = true;
+      const clear = document.createElement('button'); clear.type = 'button'; clear.className = 'el-select__clear el-icon-circle-close'; clear.setAttribute('aria-label','清空'); clear.textContent = '×'; clear.onclick = event => { event.stopPropagation(); commit(field.key,'','clear'); closeLayers(); };
+      input.onclick = () => openSelect(input,field); input.addEventListener('input',() => { if (field.type === 'remote') openSelect(input,field,input.value); else input.value = state.draft[field.key]; });
+      input.addEventListener('blur',() => { setTimeout(() => { if (!document.getElementById(`${id}-list`)) input.value = state.draft[field.key]; },0); });
+      wrapper.append(input,clear); select.append(wrapper,display); fieldWrapper.append(select); content.append(fieldWrapper); return item;
+    }
+    if (field.type === 'region') {
+      const host = document.createElement('div'); host.className = 's-region'; host.dataset.maxlevel = field.level || 'district';
+      const input = document.createElement('input'); input.id = id; input.name = field.key; input.readOnly = true; input.className = 'el-input__inner'; input.setAttribute('role','combobox'); input.placeholder = '请选择地区'; input.value = state.draft[field.key]; input.setAttribute('aria-controls',`${id}-region`);
+      input.onclick = () => openRegion(input,field); input.addEventListener('input',() => { input.value = state.draft[field.key]; });
+      const clear = document.createElement('button'); clear.type = 'button'; clear.className = 's-region__clear'; clear.textContent = '×'; clear.setAttribute('aria-label','清空'); clear.onclick = () => { if (input.dataset.regionClearFails === '1') return; commit(field.key,'','clear'); closeLayers(); };
+      host.append(input,clear); content.append(host); return item;
+    }
+    if (field.type === 'file') {
+      const input = document.createElement('input'); input.id = id; input.name = field.key; input.type = 'file'; input.multiple = true; input.dataset.localOnly = 'true';
+      input.accept = field.accept || '';
+      input.onchange = () => { const files = Array.from(input.files || []); if (files.some(file => file.size > field.maxBytes)) { document.querySelector('#fixture-status').textContent = '匿名附件超出4M限制'; return; } commit(field.key,files.map(file => file.name),'local-file'); };
+      content.append(input); return item;
+    }
+    const input = document.createElement(field.type === 'textarea' ? 'textarea' : 'input'); input.id = id; input.name = field.key;
+    if (input.tagName === 'INPUT') input.type = 'text';
+    if (field.maxLength) input.maxLength = field.maxLength;
+    input.value = state.draft[field.key]; input.placeholder = '请输入'; input.addEventListener('input',() => commit(field.key,input.value,'text')); content.append(input); return item;
+  }
+  function openSelect(input,field,query = '') {
+    closeLayers(input); input.setAttribute('aria-expanded','true');
+    const uid = state.active.uid;
+    setTimeout(() => {
+      if (state.active?.uid !== uid) return;
+      document.getElementById(`${input.id}-list`)?.remove();
+      const popup = document.createElement('div'); popup.className = 'el-select-dropdown'; popup.id = `${input.id}-list`; popup.dataset.fixturePopup = 'select'; popup.setAttribute('role','listbox'); popup.dataset.ownerId = input.id;
+      const options = field.options || (field.type === 'remote' ? ['匿名学校甲','匿名学校乙','匿名专业甲','匿名专业乙'] : ['示例选项甲','示例选项乙']);
+      for (const option of options.map(value => typeof value === 'string' ? { value,label:value } : value).filter(option => !query || option.label.includes(query))) {
+        const item = document.createElement('li'); item.className = 'el-select-dropdown__item'; item.setAttribute('role','option'); item.textContent = option.label; item.dataset.optionValue = option.value;
+        item.onclick = () => { if (input.dataset.reject !== '1') commit(field.key,option.label,'option'); closeLayers(); }; popup.append(item);
+      }
+      document.body.append(popup);
+    },Number(input.dataset.delay || (field.type === 'remote' ? 100 : 30)));
+  }
+  function openCalendar(input,key) {
+    if (document.getElementById(`${input.id}-panel`)) return;
+    closeLayers(); input.setAttribute('aria-expanded','true'); const uid = state.active.uid;
+    setTimeout(() => {
+      if (state.active?.uid !== uid) return;
+      const initial = parseDate(state.draft[key]) || [2026,10,5];
+      const calendar = { year: initial[0], month: initial[1], view: 'date' };
+      const popup = document.createElement('div'); popup.className = 'el-picker-panel el-date-picker el-popper'; popup.id = `${input.id}-panel`; popup.dataset.fixturePopup = 'date'; popup.dataset.ownerId = input.id;
+      const navButton = (name,icon,action) => { const button = document.createElement('button'); button.type = 'button'; button.className = `el-picker-panel__icon-btn ${icon}`; button.setAttribute('aria-label',name); button.textContent = name; button.onclick = action; return button; };
+      const changeMonth = direction => { calendar.month += direction; if (calendar.month < 1) { calendar.month = 12; calendar.year--; } if (calendar.month > 12) { calendar.month = 1; calendar.year++; } renderCalendar(); };
+      function renderCalendar() {
+        popup.replaceChildren(); popup.dataset.view = calendar.view;
+        const header = document.createElement('div'); header.className = 'el-date-picker__header';
+        header.append(navButton('前一年','el-date-picker__prev-btn el-icon-d-arrow-left',() => { calendar.year -= calendar.view === 'year' ? 10 : 1; renderCalendar(); }));
+        if (calendar.view === 'date') header.append(navButton('上个月','el-date-picker__prev-btn el-icon-arrow-left',() => changeMonth(-1)));
+        const year = document.createElement('span'); year.className = 'el-date-picker__header-label'; year.setAttribute('role','button');
+        year.textContent = calendar.view === 'year' ? `${Math.floor(calendar.year / 10) * 10} 年 - ${Math.floor(calendar.year / 10) * 10 + 9} 年` : `${calendar.year} 年`;
+        year.onclick = () => { calendar.view = 'year'; renderCalendar(); }; header.append(year);
+        if (calendar.view !== 'year') { const month = document.createElement('span'); month.className = 'el-date-picker__header-label'; month.setAttribute('role','button'); month.textContent = `${calendar.month} 月`; month.onclick = () => { calendar.view = 'month'; renderCalendar(); }; header.append(month); }
+        if (calendar.view === 'date') header.append(navButton('下个月','el-date-picker__next-btn el-icon-arrow-right',() => changeMonth(1)));
+        header.append(navButton('后一年','el-date-picker__next-btn el-icon-d-arrow-right',() => { calendar.year += calendar.view === 'year' ? 10 : 1; renderCalendar(); })); popup.append(header);
+        const table = document.createElement('table'); table.className = calendar.view === 'year' ? 'el-year-table' : calendar.view === 'month' ? 'el-month-table' : 'el-date-table';
+        const body = document.createElement('tbody'); table.append(body); popup.append(table);
+        if (calendar.view === 'year' || calendar.view === 'month') {
+          for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
+            const row = document.createElement('tr'); body.append(row);
+            for (let column = 0; column < 4; column++) {
+              const index = rowIndex * 4 + column;
+              const value = calendar.view === 'year' ? Math.floor(calendar.year / 10) * 10 - 1 + index : index + 1;
+              const cell = document.createElement('td'); const link = document.createElement('a'); link.className = 'cell'; link.textContent = calendar.view === 'year' ? String(value) : MONTH_LABELS[index]; cell.append(link); row.append(cell);
+              const disabled = calendar.view === 'year' ? input.dataset.disabledYear === String(value) : input.dataset.disabledMonth === String(value);
+              cell.className = disabled ? 'disabled' : 'available'; cell.dataset[calendar.view] = String(value);
+              link.onclick = () => { if (disabled) return; if (calendar.view === 'year') { calendar.year = value; calendar.view = 'month'; } else { calendar.month = value; calendar.view = 'date'; } renderCalendar(); };
+            }
+          }
+        } else {
+          const weekdays = document.createElement('tr'); ['日','一','二','三','四','五','六'].forEach(value => { const th = document.createElement('th'); th.textContent = value; weekdays.append(th); }); body.append(weekdays);
+          const weekday = new Date(calendar.year,calendar.month - 1,1).getDay();
+          for (let rowIndex = 0; rowIndex < 6; rowIndex++) {
+            const row = document.createElement('tr'); body.append(row);
+            for (let column = 0; column < 7; column++) {
+              const day = rowIndex * 7 + column - weekday + 1;
+              const date = new Date(calendar.year,calendar.month - 1,day); const target = iso(date.getFullYear(),date.getMonth() + 1,date.getDate());
+              const cell = document.createElement('td'); const current = date.getMonth() + 1 === calendar.month && date.getFullYear() === calendar.year;
+              cell.className = current ? 'available' : day < 1 ? 'prev-month' : 'next-month';
+              if (input.dataset.disabledDay === target) cell.classList.add('disabled'); cell.dataset.date = target;
+              const inner = document.createElement('div'); const span = document.createElement('span'); span.textContent = String(date.getDate()); inner.append(span); cell.append(inner); row.append(cell);
+              cell.onclick = () => { if (cell.classList.contains('disabled')) return; if (input.dataset.reject !== '1') commit(key,input.dataset.rewrite || target,'calendar'); closeLayers(); };
+            }
+          }
+        }
+      }
+      renderCalendar(); document.body.append(popup);
+    },Number(input.dataset.delay || 30));
+  }
+  function openRegion(input,field) {
+    closeLayers(); const selected = []; const wrapper = document.createElement('div'); wrapper.className = 'el-dialog__wrapper s-region__modal'; wrapper.id = `${input.id}-region`; wrapper.dataset.fixturePopup = 'region'; wrapper.dataset.ownerId = input.id;
+    const dialog = document.createElement('div'); dialog.className = 'el-dialog s-region__dialog';
+    const title = document.createElement('h3'); title.textContent = '选择地区'; dialog.append(title);
+    const levels = document.createElement('div'); levels.className = 's-region__levels'; dialog.append(levels);
+    const count = field.level === 'city' ? 2 : 3;
+    const renderLevel = (nodes,level) => {
+      Array.from(levels.children).slice(level).forEach(node => node.remove());
+      const list = document.createElement('div'); list.className = 's-region__level'; list.dataset.level = String(level); list.setAttribute('role','listbox');
+      for (const node of nodes) {
+        const button = document.createElement('button'); button.type = 'button'; button.className = 's-region__option'; button.setAttribute('role','option'); button.textContent = node.label;
+        button.onclick = () => { selected.splice(level,selected.length - level,node.label); Array.from(list.children).forEach(child => child.setAttribute('aria-selected',String(child === button))); if (level + 1 < count) renderLevel(node.children || [],level + 1); confirm.disabled = selected.length !== count; }; list.append(button);
+      }
+      levels.append(list);
+    };
+    const confirm = document.createElement('button'); confirm.type = 'button'; confirm.className = 'el-button el-button--primary'; confirm.textContent = '确认'; confirm.disabled = true;
+    // Explicit local fault injection; it makes no claim about real site behavior.
+    confirm.onclick = () => { if (selected.length === count) {
+      let value = selected.join('/');
+      if (input.dataset.regionRewrite !== undefined && Number(input.dataset.regionRewriteRemaining ?? 1) > 0) {
+        value = input.dataset.regionRewrite;
+        input.dataset.regionRewriteRemaining = String(Number(input.dataset.regionRewriteRemaining ?? 1) - 1);
+      }
+      commit(field.key,value,'region'); closeLayers();
+    } };
+    renderLevel(REGION_TREE,0); dialog.append(confirm);
+    const close = document.createElement('button'); close.type = 'button'; close.textContent = '关闭'; close.onclick = closeLayers; dialog.append(close); wrapper.append(dialog); document.body.append(wrapper);
+  }
+  document.addEventListener('keydown',event => { if (event.key === 'Escape') closeLayers(); });
+  for (const module of MODULES) {
+    const button = document.createElement('button'); button.type = 'button'; button.textContent = module.title; button.dataset.moduleKey = module.key; button.onclick = () => requestOpen(module.key); document.querySelector('nav').append(button);
+  }
+  // Initial-state hooks only. Production fill success is checked against draft,
+  // input and saved state by scenarios; these hooks do not fabricate fill reports.
+  globalThis.ZhaopinFixture = {
+    modules: MODULES, datePairs: DATE_PAIRS,
+    open(key,index = 0) { state.dirty = false; openModule(key,index); },
+    seed(key,index,values) { const module = byKey(key); state.saved[key] ||= [blank(module)]; state.saved[key][index] = { ...blank(module), ...structuredClone(values) }; },
+    setInitial(values) { Object.assign(state.draft,structuredClone(values)); Object.entries(values).forEach(([key,value]) => displayValue(key,value)); state.dirty = false; renderConditions(); },
+    snapshot() { return structuredClone({ active: state.active, draft: state.draft, saved: state.saved, dirty: state.dirty, saveCount: state.saveCount, cancelCount: state.cancelCount, commits: state.commits }); },
+    reset() { closeLayers(); Object.assign(state,{ active:null,draft:null,dirty:false,saved:{},saveCount:0,cancelCount:0,commits:[],pendingNavigation:null }); if (MODULES.length) openModule(MODULES[0].key); }
+  };
+  if (MODULES.length) openModule(MODULES[0].key);
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>Anonymous ByteDance competition fixture</title>
+<style>body{font:16px sans-serif;padding:20px}[class^=apply-form-array-card__]{border:1px solid;padding:12px;margin:8px}.ud-formily-item{padding:8px}.ud__select__dropdown{position:fixed;top:0;right:0;background:white;border:1px solid;z-index:100}.ud__select__list__item{padding:4px;cursor:pointer}.ud__select__dropdown-hidden{display:none}textarea{width:300px}</style><body>
+<!-- Only anonymous data and public component structure. Names are selectable, not free text. -->
+<div class="applyFormModuleWrapper-windows"><div class="applyFormModuleWrapper-left"><p>作品</p></div><div class="apply-form-array-card__decoy"><input value="匿名作品原值"><textarea>匿名作品描述</textarea></div></div>
+<div class="applyFormModuleWrapper-windows"><div class="applyFormModuleWrapper-left"><p>竞赛</p><p>请填写竞赛记录</p></div><div class="applyFormModuleWrapper-right"><div id="rows"></div><button id="add">添加</button></div></div>
+<div class="ud__select__dropdown ud__select__dropdown-hidden"><div class="ud__select__list__item">不在菜单的匿名名称</div></div>
+<script>
+const rows=document.querySelector('#rows');let popup=null;
+function close(){popup?.remove();popup=null}
+function field(label,key,control){const el=document.createElement('div');el.className='ud-formily-item';el.dataset.formFieldI18nName=label;el.dataset.formFieldName=key;el.innerHTML='<div class="ud-formily-item-label"><label>'+label+'</label></div>';el.append(control);return el}
+function select(){const el=document.createElement('div');el.className='ud__select';el.innerHTML='<div class="ud__select__selector"><div class="ud__select__selector__content"><div class="ud__select__selector__selectItem"></div><div class="ud__select__selector__search"><input class="ud__native-input" role="combobox" type="search"></div></div><span class="ud__select__selector__clear">清空</span></div>';
+const query=el.querySelector('input'),shown=el.querySelector('.ud__select__selector__selectItem');
+query.onclick=()=>{close();popup=document.createElement('div');popup.className='ud__select__dropdown';for(const name of [...Array.from({length:14},(_,i)=>'匿名竞赛'+i),'其他']){const option=document.createElement('div');option.className='ud__select__list__item';option.textContent=name;option.onclick=()=>{shown.textContent=name;query.value='';close()};popup.append(option)}document.body.append(popup)};
+query.onkeydown=e=>{if(e.key==='Escape')close()};el.querySelector('.ud__select__selector__clear').onclick=()=>{shown.textContent='';query.value=''};return el}
+function add(){const row=document.createElement('div');row.className='apply-form-array-card__anonymous';const group=document.createElement('div');group.className='register-form-group-wrapper';const desc=document.createElement('textarea');desc.className='ud__native-input';group.append(field('竞赛名称','name',select()),field('描述','desc',desc));const remove=document.createElement('button');remove.textContent='删除';remove.onclick=()=>row.remove();row.append(group,remove);rows.append(row)}
+document.querySelector('#add').onclick=add;for(let i=0;i<5;i++)add();
+</script></body></html>

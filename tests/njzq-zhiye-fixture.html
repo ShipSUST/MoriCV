@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN" data-resume-helper-fixture="zhiye"><meta charset="utf-8"><title>南京证券家庭情况匿名拓印</title>
+<style>body{font:16px sans-serif}label{display:block}.form-item{margin:12px}.phoenix-input input{width:250px}</style>
+<main><div id="anonymous-basic">个人信息</div><div class="ux-standard-form"><div class="form" id="anonymous-basic"><div class="form-item"><label>姓名</label><input value="虚构本人"></div></div></div>
+<section><div id="anonymous-family">家庭情况</div><div id="anonymous-records"></div><div id="anonymous-family_addButton">添加</div></section></main>
+<script>
+if(location.hostname!=='127.0.0.1')throw Error('Anonymous localhost only');
+const labels=['姓名','与本人关系','工作单位','年龄','职务','联系电话'];
+function addAnonymousFamily(){const wrap=document.createElement('div');wrap.className='anonymous-wrapper';wrap.innerHTML='<div class="ux-standard-form"><div class="form twoLineFormStyleLong formStyleLeftAndRight" id="anonymous-family"><div class="form-part-body"></div></div></div>';
+const body=wrap.querySelector('.form-part-body');for(const label of labels){const field=document.createElement('div');field.className='form-item form-item--phoenix';field.innerHTML='<div class="form-item__title form-item__title--right"><a class="form-item__required">*</a><label class="form-item__text"></label></div><div class="form-item__control"><div class="phoenix-input"><input type="text" class="phoenix-input__input phoenix-input__input--sizeLarge"></div></div>';field.querySelector('label').textContent=label;body.append(field);}document.querySelector('#anonymous-records').append(wrap);return wrap;}
+addAnonymousFamily();addAnonymousFamily();document.querySelector('[id$="_addButton"]').onclick=addAnonymousFamily;
+globalThis.chrome={runtime:{onMessage:{addListener(fn){globalThis.__resumeHelperListener=fn;}}}};
+</script>
+<script src="/src/shared/matcher-core.js"></script><script src="/src/shared/category-runtime.js"></script><script>ResumeHelperCore.detectSite=()=> 'zhiye';ResumeHelperCore.detectZhiyeTemplate=()=> 'njzq';</script>
+<script src="/src/content/fill.js"></script>
+<script type="module">const {runNjzq}=await import('/njzq-zhiye-scenarios.js');globalThis.__recordRunner=runNjzq().catch(error=>({error:error.stack,checks:globalThis.__recordProgress?.checks||[]}));</script>
+</html>

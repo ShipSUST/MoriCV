@@ -1,0 +1,17 @@
+<!doctype html><html lang="zh-CN" data-job51-anonymous="resume-v1"><meta charset="utf-8"><title>Anonymous education contract</title><style>dl{display:flex;gap:10px}dt{width:160px}input,select,textarea{min-width:130px}</style><ul><li class="leftli2" title="教育经历">教育经历</li></ul><form id="form1"><div id="container"><h1>教育经历</h1><div class="ci"></div></div></form><script>
+// Non-date editstyle numbers and supplemental visibility are synthetic fixture metadata.
+// Their actual site values/callbacks were not retained by the read-only investigation.
+const defs=[['Degree','最高学历','select','4'],['Course','主修课程','textarea','6'],['CCA1','其他学历','select','4'],['CCF1','主修课程2','textarea','6']];
+if(new URLSearchParams(location.search).get('case')?.startsWith('combo'))defs.push(['School','毕业学校','select','1'],['OtherSchool','其他学校','input','1'],['Major','专业','select','1'],['CCA2','毕业学校2','select','1']);
+if(new URLSearchParams(location.search).get('case')==='date')defs.push(['GradDate','毕业时间','input','3'],['CCC1','毕业时间2','input','3']);
+for(const [col,label,type,style] of defs){const dl=document.createElement('dl');dl.setAttribute('dlcolname',col);dl.setAttribute('editstyle',style);dl.innerHTML='<dt>'+label+'</dt><dd><'+type+' id="cc_'+col+'_'+(type==='select'?'1':style)+'_1">'+(type==='select'?'<option value="">请选择</option><option value="master">硕士研究生</option><option value="bachelor">大学本科</option>':'')+'</'+type+'></dd>';document.querySelector('.ci').append(dl);}
+for(const input of document.querySelectorAll('input[id$="_3_1"]')){input.readOnly=true;input.setAttribute('onfocus','setday(this)');}
+globalThis.chrome={runtime:{onMessage:{addListener(fn){globalThis.__resumeHelperListener=fn;}}}};
+</script><script src="/job51-vendor/ExternalJs/jquery-ehireplus.js"></script><script src="/job51-vendor/ExternalJs/autocompletecomboboxlib.js"></script><script src="/job51-vendor/ExternalJs/autocompletecombobox.js"></script><script>
+if(new URLSearchParams(location.search).get('case')?.startsWith('combo')){
+for(const col of ['School','Major','CCA2']){const values=col==='Major'?['虚构专业,major1','其他专业,FF01']:['虚构甲校,school1','虚构乙校,school2','其他院校,S_99000',...Array.from({length:120},(_,i)=>'备选校'+i+',S'+i)];CommonCreateCombobox(col==='Major'?'D_MAJOR':'D_SCHOOL',values,'cc_'+col+'_1_1','','zh-cn',{});}
+}
+globalThis.Job51EducationReady=true;
+</script><script src="/job51-vendor/My97DatePicker/WdatePicker.js"></script><script>window.setday=function(input){const d=input.dataset;WdatePicker({lang:"zh-cn",disabledDates:d.disabledDate?[d.disabledDate]:null,isShowClear:d.noClear!=="1",onpicked:function(){if(d.rejectDate){input.value="2020-01-01";if(d.rejectDate==="once")delete d.rejectDate;}}});};</script><script src="/src/content/job51-readback.js"></script><script type="module">
+if(!new URLSearchParams(location.search).has('isolated')){for(const file of ['/src/shared/matcher-core.js','/src/shared/category-runtime.js','/src/content/job51.js','/src/content/fill.js']){const script=document.createElement('script');script.src=file;document.head.append(script);await new Promise(resolve=>script.onload=resolve);}const {runEducation}=await import('/job51-education-scenarios.js');globalThis.__recordRunner=runEducation().catch(error=>({error:error.stack,checks:globalThis.__recordProgress?.checks||[]}));}
+</script></html>

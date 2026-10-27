@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="zh-CN" data-resume-helper-fixture="feishu">
+<head>
+  <meta charset="utf-8">
+  <title>飞书招聘 ATSX Fixture</title>
+  <style>
+    body { font-family: sans-serif; padding: 24px; }
+    .createFormSection-container { border: 1px solid #ddd; border-radius: 8px; margin: 12px 0; padding: 12px; }
+    .createFormSection-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .atsx-form-item { margin: 8px 0; display: flex; align-items: center; gap: 8px; }
+    .atsx-form-item-label { display: inline-block; width: 150px; color: #555; }
+    .atsx-input { width: 300px; }
+    .resumeEditForm-item { border-top: 1px dashed #ccc; padding-top: 8px; }
+    .createFormSection-addBtn { color: #2b6cb0; cursor: pointer; margin-top: 8px; }
+    .atsx-select { border: 1px solid #bbb; border-radius: 4px; min-width: 180px; padding: 4px 8px; cursor: pointer; }
+    .atsx-select-dropdown { background: white; border: 1px solid #888; position: absolute; z-index: 30; max-height: 220px; overflow: auto; }
+    .atsx-select-dropdown-hidden { display: none; }
+    .atsx-select-dropdown-menu-item { padding: 4px 12px; cursor: pointer; list-style: none; }
+    .atsx-date-picker-period-month { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #bbb; border-radius: 4px; padding: 4px 8px; }
+    .atsx-date-picker-period-month-label { cursor: pointer; }
+    .atsx-date-picker-period-month-panel { position: fixed; right: 40px; top: 40px; z-index: 40; background: white; border: 1px solid #888; display: flex; }
+    .atsx-date-picker-period-month-panel-list { max-height: 240px; overflow: auto; padding: 6px; }
+    .atsx-date-picker-period-month-panel-list-item { padding: 4px 10px; cursor: pointer; }
+    .atsx-date-picker-period-month-panel-list-item[data-selected="true"] { background: #dff2e8; font-weight: 700; }
+    .atsx-date-picker-panel { position: fixed; top: 50px; right: 40px; background: white; z-index: 50; padding: 12px; }
+    .atsx-date-picker-panel-body-cell-content { display: inline-block; padding: 8px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div id="sections"></div>
+  <button id="submit">提交简历</button>
+  <pre id="events"></pre>
+
+  <script>
+    // 全部为虚构数据，仅用于结构验证。
+    const YEARS = Array.from({ length: 28 }, (_, index) => String(2027 - index));
+    const MONTHS = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+    const log = (message) => {
+      document.querySelector("#events").textContent += message + "\n";
+    };
+
+    let uid = 0;
+    const nextId = (prefix) => `${prefix}[${uid++}]`;
+
+    function formItem(label, control) {
+      return `<div class="atsx-form-item"><span class="atsx-form-item-label">${label}</span>`
+        + `<span class="atsx-form-item-children">${control}</span></div>`;
+    }
+    function textInput(id) {
+      return `<input class="atsx-input" type="text" id="${id}" data-cy="${id}">`;
+    }
+    function yearInput(id) {
+      return `<div class="atsx-date-picker"><input class="atsx-input" type="text" id="${id}" data-cy="${id}" placeholder="YYYY"><span class="atsx-date-picker-clear">清除</span></div>`;
+    }
+    function textarea(id) {
+      return `<textarea class="atsx-input" id="${id}" data-cy="${id}"></textarea>`;
+    }
+    function select(id, options) {
+      return `<div class="atsx-select" id="${id}" data-cy="${id}" data-options="${options}">`
+        + `<span class="atsx-select-selection"><span class="atsx-select-selection-selected-value"></span></span><span class="atsx-select-selection-clear">清除</span></div>`;
+    }
+    // 年月区间：一个容器里两个 label，各自有隐藏输入框。
+    function period(id, second = true) {
+      const labelFor = (suffix) => `<div class="atsx-date-picker-period-month-label" data-cy="${id}${suffix}">`
+        + `<span class="atsx-date-picker-period-month-label-year">YYYY</span>`
+        + `<span class="atsx-date-picker-period-month-label-separator">-</span>`
+        + `<span class="atsx-date-picker-period-month-label-month">MM</span></div>`;
+      return `<div class="atsx-date-picker atsx-date-picker-period-month" data-cy="${id}">`
+        + labelFor("Begin")
+        + (second ? `<div class="atsx-date-picker-period-line"></div>${labelFor("End")}` : "")
+        + `<input class="atsx-date-picker-period-hidden-input" type="hidden" value="">`
+        + `<span class="atsx-date-picker-clear">清除</span></div>`;
+    }
+
+    const SECTIONS = [
+      {
+        title: "申请信息",
+        kind: "basic",
+        once: true,
+        body: [
+          ["意向城市", select("apply.city", "苏州|上海|北京|深圳")],
+          ["推荐码", textInput("apply.referralCode")]
+        ]
+      },
+      {
+        title: "基本信息",
+        kind: "basic",
+        once: true,
+        body: [
+          ["姓名", textInput("basic.name")],
+          ["手机号码", textInput("basic.mobile")],
+          ["邮箱", textInput("basic.email")],
+          ["年龄", textInput("basic.age")],
+          ["性别", select("basic.gender", "男|女")],
+          ["家乡", textInput("basic.hometown")],
+          ["出生日期", textInput("basic.birthday")],
+          ["政治面貌", select("basic.politicalStatus", "中共党员|共青团员|群众")],
+          ["民族", textInput("basic.ethnicity")],
+          ["现居住地址", textInput("basic.address")],
+          ["期望薪资", textInput("basic.expectedSalary")]
+        ]
+      },
+      {
+        title: "教育经历",
+        kind: "education",
+        body: [
+          ["学校名称", select("school", "示例大学|示例科技大学|虚构理工学院|样例师范大学")],
+          ["学历", select("degree", "博士|硕士|本科|大专")],
+          ["学位", select("academicDegree", "博士|硕士|学士")],
+          ["院系名称", textInput("college")],
+          ["专业", textInput("fieldOfStudy")],
+          ["起止时间", period("periodInput")]
+        ]
+      },
+      {
+        title: "工作经历",
+        kind: "career",
+        body: [
+          ["公司名称", textInput("company")],
+          ["职位名称", textInput("position")],
+          ["起止时间", period("careerPeriod")],
+          ["描述", textarea("description")],
+          ["换工作原因", textInput("reason")]
+        ]
+      },
+      {
+        title: "实习经历",
+        kind: "internship",
+        body: [
+          ["公司名称", textInput("internCompany")],
+          ["职位名称", textInput("internPosition")],
+          ["起止时间", period("internPeriod")],
+          ["描述", textarea("internDescription")]
+        ]
+      },
+      { title: "项目经历", kind: "project", body: [["项目名称", textInput("projectName")], ["项目角色", textInput("projectRole")], ["起止时间", period("projectPeriod")], ["项目链接", textInput("projectLink")], ["描述", textarea("projectDescription")]] },
+      { title: "获奖", kind: "honor", body: [["获奖名称", textInput("honorName")], ["获奖时间", new URLSearchParams(location.search).has('years') ? yearInput("honorDate") : textInput("honorDate")], ["描述", textarea("honorDescription")]] },
+      { title: "语言能力", kind: "language", body: [["语言", textInput("language")], ["精通程度", textInput("proficiency")]] },
+      { title: "自我评价", kind: "summary", body: [["自我评价", textarea("selfEvaluation")]] }
+    ];
+
+    function buildItem(section) {
+      const item = document.createElement("div");
+      item.className = `resumeEditForm-item resumeEditForm-${section.kind}`;
+      item.innerHTML = section.body
+        .map(([label, control]) => formItem(label, control.includes("{ID}") ? control.replace("{ID}", nextId(section.kind)) : control))
+        .join("");
+      const year = item.querySelector('input[placeholder="YYYY"]');
+      if (year) year.addEventListener('input', () => { year.value = year.dataset.committed || ''; });
+      const remove = document.createElement("button"); remove.type = "button"; remove.textContent = "删除";
+      remove.addEventListener("click", () => item.remove()); item.append(remove);
+      return item;
+    }
+
+    function buildSection(section) {
+      const wrap = document.createElement("section");
+      wrap.className = "createFormSection-container";
+      wrap.dataset.kind = section.kind;
+      const list = document.createElement("div");
+      list.className = "createFormSection-formList" + (section.once ? "" : " createFormSection-formList-mutiple");
+      wrap.append(Object.assign(document.createElement("div"), {
+        className: "createFormSection-title",
+        textContent: section.title
+      }), list);
+      if (!section.once) {
+        const add = document.createElement("div");
+        add.className = "createFormSection-addBtn";
+        add.textContent = "添加";
+        add.addEventListener("click", () => {
+          list.append(buildItem(section));
+          log(`add:${section.kind}`);
+        });
+        wrap.append(add);
+      }
+      list.append(buildItem(section));
+      return wrap;
+    }
+
+    for (const section of SECTIONS) document.querySelector("#sections").append(buildSection(section));
+
+    // ── ATSX 下拉 ──────────────────────────────────────────────
+    let openSelect = null;
+    function closeSelect() {
+      openSelect?.querySelector(".atsx-select-dropdown")?.remove();
+      openSelect = null;
+    }
+    document.addEventListener("click", (event) => {
+      const clearSelect = event.target.closest('.atsx-select-selection-clear');
+      if (clearSelect) { clearSelect.closest('.atsx-select').querySelector('.atsx-select-selection-selected-value').textContent = ''; closeSelect(); return; }
+      const clearPeriod = event.target.closest('.atsx-date-picker-clear');
+      if (clearPeriod) {
+        const period = clearPeriod.closest('.atsx-date-picker');
+        if (!period.classList.contains('atsx-date-picker-period-month')) {
+          const input = period.querySelector('input'); input.value = ''; input.dataset.committed = ''; closeYear(); return;
+        }
+        period.querySelectorAll('.atsx-date-picker-period-month-label-year').forEach(el => el.textContent = 'YYYY');
+        period.querySelectorAll('.atsx-date-picker-period-month-label-month').forEach(el => el.textContent = 'MM');
+        period.querySelector('input').value = ''; document.querySelectorAll('.atsx-date-picker-period-month-panel').forEach(el => el.remove()); return;
+      }
+      const select = event.target.closest(".atsx-select");
+      if (select) {
+        if (openSelect === select) return closeSelect();
+        closeSelect();
+        openSelect = select;
+        const dropdown = document.createElement("div");
+        dropdown.className = "atsx-select-dropdown";
+        const menu = document.createElement("ul");
+        menu.className = "atsx-select-dropdown-menu";
+        for (const value of String(select.dataset.options || "").split("|").filter(Boolean)) {
+          const item = document.createElement("li");
+          item.className = "atsx-select-dropdown-menu-item";
+          item.textContent = value;
+          item.addEventListener("click", (clickEvent) => {
+            clickEvent.stopPropagation();
+            select.querySelector(".atsx-select-selection-selected-value").textContent = value;
+            log(`select:${select.id}=${value}`);
+            closeSelect();
+          });
+          menu.append(item);
+        }
+        dropdown.append(menu);
+        select.append(dropdown);
+        return;
+      }
+      if (!event.target.closest(".atsx-select-dropdown")) closeSelect();
+    });
+
+    // 年控件独立夹具：匹配实站 DOM，不接受直接改 input 值作为提交。
+    let yearInputOwner = null;
+    function closeYear() {
+      document.querySelectorAll('.atsx-date-picker-panel:not([data-stale])').forEach(el => el.remove());
+      yearInputOwner = null;
+    }
+    function showYear(input, first = 2018) {
+      closeYear(); yearInputOwner = input;
+      const panel = document.createElement('div'); panel.className = 'atsx-date-picker-panel'; panel.dataset.cy = `${input.dataset.cy}Dropdown`;
+      const header = document.createElement('div'); header.className = 'atsx-date-picker-panel-header';
+      const title = document.createElement('span'); title.className = 'atsx-date-picker-panel-header-title'; title.textContent = `${first}-${first + 8}`;
+      for (const direction of ['prev', 'next']) {
+        const button = document.createElement('button'); button.type = 'button'; button.dataset.cy = direction; button.textContent = direction;
+        button.onclick = e => { e.stopPropagation(); setTimeout(() => showYear(input, first + (direction === 'prev' ? -9 : 9)), Number(input.dataset.delay || 0)); };
+        header.append(button);
+      }
+      header.append(title); panel.append(header);
+      const body = document.createElement('div'); body.className = 'atsx-date-picker-panel-body atsx-date-picker-panel-body-year';
+      for (let year = first; year <= first + 8; year++) {
+        const wrap = document.createElement('div'); wrap.style.display = 'inline-block';
+        if (String(year) === input.dataset.disabledYear) wrap.className = 'atsx-date-picker-panel-body-cell-disabled';
+        const cell = document.createElement('div'); cell.className = 'atsx-date-picker-panel-body-cell-content'; cell.textContent = String(year); cell.dataset.cy = String(year);
+        cell.onclick = e => { e.stopPropagation(); if (wrap.className.includes('disabled')) return;
+          setTimeout(() => { if (!input.dataset.reject) { input.value = String(year + Number(input.dataset.rewrite || 0)); input.dataset.committed = input.value; } closeYear(); }, Number(input.dataset.delay || 0)); };
+        wrap.append(cell); body.append(wrap);
+      }
+      panel.append(body); document.body.append(panel);
+      if (input.dataset.ambiguous) document.body.append(panel.cloneNode(true));
+    }
+    document.addEventListener('click', e => {
+      const input = e.target.closest('.atsx-date-picker input[placeholder="YYYY"]');
+      if (input) { setTimeout(() => showYear(input), Number(input.dataset.delay || 0)); return; }
+      if (!e.target.closest('.atsx-date-picker-panel')) closeYear();
+    });
+
+    // ── ATSX 年月区间 ───────────────────────────────────────────
+    let openPeriod = null;
+    function closePeriod() {
+      document.querySelector(".atsx-date-picker-period-month-panel")?.remove();
+      openPeriod = null;
+    }
+    function currentValue(label) {
+      const year = label.querySelector(".atsx-date-picker-period-month-label-year").textContent;
+      const month = label.querySelector(".atsx-date-picker-period-month-label-month").textContent;
+      if (year === "YYYY" || month === "MM") return "";
+      return `${year}-${month}`;
+    }
+    function showPeriod(container, label) {
+      closePeriod();
+      openPeriod = { container, label };
+      const panel = document.createElement("div");
+      panel.className = "atsx-date-picker-period-month-panel";
+      const current = currentValue(label);
+      const yearList = document.createElement("div");
+      yearList.className = "atsx-date-picker-period-month-panel-list";
+      const monthList = document.createElement("div");
+      monthList.className = "atsx-date-picker-period-month-panel-list";
+      const item = (list, text, onPick) => {
+        const element = document.createElement("div");
+        element.className = "atsx-date-picker-period-month-panel-list-item";
+        element.dataset.cy = text;
+        element.textContent = text;
+        element.addEventListener("click", (event) => {
+          event.stopPropagation();
+          onPick(element);
+        });
+        list.append(element);
+        return element;
+      };
+      for (const year of YEARS) {
+        const element = item(yearList, year, () => {
+          label.querySelector(".atsx-date-picker-period-month-label-year").textContent = year;
+          log(`year:${year}`);
+        });
+        if (current.startsWith(year)) element.dataset.selected = "true";
+      }
+      for (const month of MONTHS) {
+        item(monthList, month, (selected) => {
+          label.querySelector(".atsx-date-picker-period-month-label-month").textContent = month;
+          container.querySelector(".atsx-date-picker-period-hidden-input").value = currentValue(label);
+          log(`month:${month}`);
+          closePeriod();
+        });
+      }
+      panel.append(yearList, monthList);
+      document.body.append(panel);
+    }
+    document.addEventListener("click", (event) => {
+      const label = event.target.closest(".atsx-date-picker-period-month-label");
+      if (label) {
+        event.stopPropagation();
+        showPeriod(label.closest(".atsx-date-picker-period-month"), label);
+        return;
+      }
+      if (!event.target.closest(".atsx-date-picker-period-month-panel")) closePeriod();
+    });
+  </script>
+</body>
+</html>

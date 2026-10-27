@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>简历助手本地验收表单</title>
+    <style>
+      body { max-width: 720px; margin: 40px auto; font: 16px system-ui; color: #17241f; }
+      form { display: grid; gap: 16px; }
+      label { display: grid; gap: 6px; }
+      input, select, textarea { padding: 10px; border: 1px solid #aaa; border-radius: 6px; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      #events { background: #f4f7f5; padding: 12px; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>简历助手本地验收表单</h1>
+    <p>该页面不会提交数据。加载扩展后，点击工具栏图标，再执行“仅扫描”或“批量填写空字段”。</p>
+    <form>
+      <div class="row">
+        <label>First Name<input id="first-name" name="firstName" autocomplete="given-name"></label>
+        <label>Last Name<input id="last-name" name="lastName" autocomplete="family-name"></label>
+      </div>
+      <div class="row">
+        <label>What is your legal first name?<input id="legal-first-name" name="legalFirstName"></label>
+        <label>What is your legal last name?<input id="legal-last-name" name="legalLastName"></label>
+      </div>
+      <div class="row">
+        <label>姓名（必填）<input id="full-name" name="fullName" autocomplete="name"></label>
+        <label>电子邮箱<input id="email" type="email" name="email" autocomplete="email"></label>
+      </div>
+      <label>Confirm Email<input id="confirm-email" type="email" name="confirmEmail"></label>
+      <div class="row">
+        <label>手机号码<input id="mobile" type="tel" name="mobile" autocomplete="tel"></label>
+        <label>出生日期<input id="birthday" type="date" name="birthday"></label>
+      </div>
+      <div class="row">
+        <label class="react-controlled">微信号（React 受控输入模拟）<input id="wechat" name="wechat" placeholder="请输入微信号"></label>
+        <label class="vue-controlled">兴趣爱好（Vue 受控输入模拟）<input id="hobby" name="hobby" placeholder="请输入兴趣爱好"></label>
+      </div>
+      <div class="row">
+        <label>性别<select id="gender"><option value="">请选择</option><option>男</option><option>女</option></select></label>
+        <label>全日制最高学历<select id="degree"><option value="">请选择</option><option>本科</option><option>硕士研究生</option><option>博士研究生</option></select></label>
+      </div>
+      <label class="ant-form-item">国籍/地区
+        <input id="nationality" type="text" role="combobox" aria-expanded="false" readonly>
+      </label>
+      <div id="nationality-options" role="listbox" hidden>
+        <div role="option">中国大陆</div>
+        <div role="option">中国香港</div>
+        <div role="option">其他</div>
+      </div>
+      <label class="ant-form-item">户口所在地
+        <input id="household" type="text" role="combobox" aria-expanded="false" readonly>
+      </label>
+      <div id="province-options" class="ant-cascader-menus" role="listbox" hidden>
+        <div class="ant-cascader-menu-item" role="option">江苏省</div>
+        <div class="ant-cascader-menu-item" role="option">浙江省</div>
+      </div>
+      <div id="city-options" class="ant-cascader-menus" role="listbox" hidden>
+        <div class="ant-cascader-menu-item" role="option">泰州市</div>
+        <div class="ant-cascader-menu-item" role="option">苏州市</div>
+      </div>
+      <fieldset class="ant-form-item">
+        <legend>是否为应届毕业生</legend>
+        <label><input type="radio" name="freshGraduate" value="是">是</label>
+        <label><input type="radio" name="freshGraduate" value="否">否</label>
+      </fieldset>
+      <fieldset class="ant-form-item">
+        <legend>期望工作城市</legend>
+        <label><input type="checkbox" name="preferredCity" value="苏州">苏州</label>
+        <label><input type="checkbox" name="preferredCity" value="上海">上海</label>
+        <label><input type="checkbox" name="preferredCity" value="杭州">杭州</label>
+        <label><input type="checkbox" name="preferredCity" value="南京">南京</label>
+      </fieldset>
+      <label class="ant-form-item">毕业院校
+        <div class="ant-select">
+          <span id="school-display" class="ant-select-selection-item"></span>
+          <input id="school" name="school" role="combobox" placeholder="请输入学校名称" autocomplete="off">
+          <button type="button" class="ant-select-clear" aria-label="清空学校">清空</button>
+        </div>
+      </label>
+      <div id="school-options" class="ant-select-dropdown" hidden></div>
+      <label>所学专业<input id="major" name="major" placeholder="请输入专业名称"></label>
+      <label class="ant-calendar-picker">硕士毕业时间
+        <input id="ant-graduation-date" name="masterGraduationDate" readonly placeholder="请选择">
+      </label>
+      <div id="ant-date-panel" class="ant-calendar-picker-container" hidden>
+        <table><tbody><tr><td title="2027年6月20日"><span class="ant-calendar-date">20</span></td></tr></tbody></table>
+      </div>
+      <label>通信地址<textarea id="address" name="address"></textarea></label>
+      <label>自我评价<div id="self-evaluation" contenteditable="true" aria-label="自我评价"></div></label>
+      <label>已有内容（不应覆盖）<input name="name" value="请保留这段内容"></label>
+      <section data-resume-repeat="projects" class="project-experience-section">
+        <h2>Project Experience</h2>
+        <button id="add-generic-project" type="button">Add another</button>
+        <div id="generic-project-list"></div>
+      </section>
+      <section data-resume-repeat="awards" class="award-section">
+        <h2>荣誉</h2>
+        <button id="add-generic-award" type="button">添加荣誉</button>
+        <div id="generic-award-list"></div>
+      </section>
+      <section data-resume-repeat="programmingLanguages" class="skill-section">
+        <h2>技术技能</h2>
+        <button id="add-generic-skill" type="button">添加技能</button>
+        <div id="generic-skill-list"></div>
+      </section>
+    </form>
+    <h2>事件记录</h2>
+    <div id="events">等待填写…</div>
+    <script>
+      const log = [];
+      const nationality = document.querySelector('#nationality');
+      const nationalityOptions = document.querySelector('#nationality-options');
+      nationality.addEventListener('click', () => {
+        nationalityOptions.hidden = false;
+        nationality.setAttribute('aria-expanded', 'true');
+      });
+      nationalityOptions.addEventListener('click', (event) => {
+        if (event.target.getAttribute('role') !== 'option') return;
+        nationality.value = event.target.textContent.trim();
+        nationality.dispatchEvent(new Event('input', { bubbles: true }));
+        nationality.dispatchEvent(new Event('change', { bubbles: true }));
+        nationalityOptions.hidden = true;
+        nationality.setAttribute('aria-expanded', 'false');
+      });
+      const household = document.querySelector('#household');
+      const provinceOptions = document.querySelector('#province-options');
+      const cityOptions = document.querySelector('#city-options');
+      household.addEventListener('click', () => {
+        provinceOptions.hidden = false;
+        cityOptions.hidden = true;
+        household.setAttribute('aria-expanded', 'true');
+      });
+      provinceOptions.addEventListener('click', (event) => {
+        if (event.target.getAttribute('role') !== 'option') return;
+        household.dataset.province = event.target.textContent.trim();
+        provinceOptions.hidden = true;
+        cityOptions.hidden = false;
+      });
+      cityOptions.addEventListener('click', (event) => {
+        if (event.target.getAttribute('role') !== 'option') return;
+        household.value = `${household.dataset.province} / ${event.target.textContent.trim()}`;
+        household.dispatchEvent(new Event('input', { bubbles: true }));
+        household.dispatchEvent(new Event('change', { bubbles: true }));
+        cityOptions.hidden = true;
+        household.setAttribute('aria-expanded', 'false');
+      });
+      const school = document.querySelector('#school');
+      const schoolDisplay = document.querySelector('#school-display');
+      const schoolOptions = document.querySelector('#school-options');
+      const savedSchool = sessionStorage.getItem('fixture:schoolSelection') || '';
+      schoolDisplay.textContent = savedSchool;
+      document.querySelector('.ant-select-clear').addEventListener('click', () => {
+        schoolDisplay.textContent = ''; school.value = '';
+        sessionStorage.removeItem('fixture:schoolSelection');
+        school.dispatchEvent(new Event('change', { bubbles: true }));
+        schoolOptions.hidden = true;
+      });
+      school.addEventListener('click', () => { schoolOptions.hidden = false; });
+      school.addEventListener('input', () => {
+        schoolOptions.replaceChildren();
+        for (const value of ['示例大学', '示例科技大学'].filter((item) => item.includes(school.value))) {
+          const option = document.createElement('div'); option.className = 'ant-select-item-option'; option.setAttribute('role', 'option'); option.textContent = value;
+          schoolOptions.append(option);
+        }
+        schoolOptions.hidden = false;
+      });
+      schoolOptions.addEventListener('click', (event) => {
+        const option = event.target.closest('.ant-select-item-option');
+        if (!option) return;
+        schoolDisplay.textContent = option.textContent.trim();
+        school.value = '';
+        sessionStorage.setItem('fixture:schoolSelection', schoolDisplay.textContent);
+        school.dispatchEvent(new Event('change', { bubbles: true }));
+        schoolOptions.hidden = true;
+      });
+      const antGraduationDate = document.querySelector('#ant-graduation-date');
+      const antDatePanel = document.querySelector('#ant-date-panel');
+      antGraduationDate.addEventListener('click', () => { antDatePanel.hidden = false; });
+      antDatePanel.addEventListener('click', (event) => {
+        if (!event.target.closest('[title="2027年6月20日"]')) return;
+        antGraduationDate.value = '2027-06-20';
+        antGraduationDate.dispatchEvent(new Event('input', { bubbles: true }));
+        antGraduationDate.dispatchEvent(new Event('change', { bubbles: true }));
+        antDatePanel.hidden = true;
+      });
+      for (const selector of ['#wechat', '#hobby']) {
+        const control = document.querySelector(selector);
+        let controlledState = control.value;
+        control.addEventListener('input', () => { controlledState = control.value; });
+        control.addEventListener('blur', () => { control.value = controlledState; });
+      }
+      for (const control of document.querySelectorAll('input, select, textarea')) {
+        const isChoice = control.type === 'radio' || control.type === 'checkbox';
+        const key = `fixture:${control.id || control.name}${isChoice ? `:${control.value}` : ''}`;
+        const saved = sessionStorage.getItem(key);
+        if (saved !== null) {
+          if (isChoice) control.checked = saved === '1';
+          else control.value = saved;
+        }
+        const persist = () => sessionStorage.setItem(key, isChoice ? (control.checked ? '1' : '0') : control.value);
+        control.addEventListener('change', persist);
+        control.addEventListener('input', persist);
+      }
+      const selfEvaluation = document.querySelector('#self-evaluation');
+      selfEvaluation.textContent = sessionStorage.getItem('fixture:selfEvaluation') || '';
+      selfEvaluation.addEventListener('input', () => sessionStorage.setItem('fixture:selfEvaluation', selfEvaluation.innerText));
+      const genericProjectList = document.querySelector('#generic-project-list');
+      function addGenericProject() {
+        const index = genericProjectList.children.length;
+        const item = document.createElement('div'); item.dataset.repeatItem = 'projects'; item.className = 'project-item';
+        const definitions = [
+          ['Project Name', 'text', 'name'], ['Project Role', 'textarea', 'role'],
+          ['Project Description', 'textarea', 'description'], ['Start Date', 'month', 'start'], ['End Date', 'month', 'end']
+        ];
+        for (const [labelText, type, key] of definitions) {
+          const label = document.createElement('label'); label.textContent = labelText;
+          const control = document.createElement(type === 'textarea' ? 'textarea' : 'input');
+          if (type !== 'textarea') control.type = type;
+          control.name = `project-${index}-${key}`;
+          const storageKey = `fixture:project:${index}:${key}`;
+          control.value = sessionStorage.getItem(storageKey) || '';
+          const persist = () => sessionStorage.setItem(storageKey, control.value);
+          control.addEventListener('input', persist); control.addEventListener('change', persist);
+          label.append(control); item.append(label);
+        }
+        genericProjectList.append(item);
+        sessionStorage.setItem('fixture:projectCount', String(genericProjectList.children.length));
+      }
+      document.querySelector('#add-generic-project').addEventListener('click', addGenericProject);
+      for (let index = 0, count = Number(sessionStorage.getItem('fixture:projectCount') || 0); index < count; index += 1) addGenericProject();
+      const genericAwardList = document.querySelector('#generic-award-list');
+      function addGenericAward() {
+        const index = genericAwardList.children.length;
+        const item = document.createElement('div'); item.dataset.repeatItem = 'awards'; item.className = 'award-item';
+        const definitions = [
+          ['荣誉名称', 'text', 'name'], ['获奖时间', 'month', 'start'],
+          ['奖项级别', 'text', 'type'], ['获奖等级', 'text', 'result'], ['荣誉描述', 'textarea', 'description']
+        ];
+        for (const [labelText, type, key] of definitions) {
+          const label = document.createElement('label'); label.textContent = labelText;
+          const control = document.createElement(type === 'textarea' ? 'textarea' : 'input');
+          if (type !== 'textarea') control.type = type;
+          control.name = `award-${index}-${key}`;
+          const storageKey = `fixture:award:${index}:${key}`;
+          control.value = sessionStorage.getItem(storageKey) || '';
+          const persist = () => sessionStorage.setItem(storageKey, control.value);
+          control.addEventListener('input', persist); control.addEventListener('change', persist);
+          label.append(control); item.append(label);
+        }
+        genericAwardList.append(item);
+        sessionStorage.setItem('fixture:awardCount', String(genericAwardList.children.length));
+      }
+      document.querySelector('#add-generic-award').addEventListener('click', addGenericAward);
+      for (let index = 0, count = Number(sessionStorage.getItem('fixture:awardCount') || 0); index < count; index += 1) addGenericAward();
+      const genericSkillList = document.querySelector('#generic-skill-list');
+      function addGenericSkill() {
+        const index = genericSkillList.children.length;
+        const item = document.createElement('div'); item.dataset.repeatItem = 'programmingLanguages'; item.className = 'programmingLanguage-item';
+        const nameLabel = document.createElement('label'); nameLabel.textContent = '技能名称';
+        const name = document.createElement('input'); name.name = `skill-${index}-name`;
+        const levelLabel = document.createElement('label'); levelLabel.textContent = '掌握程度';
+        const level = document.createElement('select'); level.name = `skill-${index}-level`;
+        for (const value of ['', '了解', '熟悉', '熟练']) {
+          const option = document.createElement('option'); option.value = value; option.textContent = value || '请选择'; level.append(option);
+        }
+        for (const [control, key] of [[name, 'name'], [level, 'level']]) {
+          const storageKey = `fixture:skill:${index}:${key}`;
+          control.value = sessionStorage.getItem(storageKey) || '';
+          const persist = () => sessionStorage.setItem(storageKey, control.value);
+          control.addEventListener('input', persist); control.addEventListener('change', persist);
+        }
+        nameLabel.append(name); levelLabel.append(level); item.append(nameLabel, levelLabel);
+        genericSkillList.append(item);
+        sessionStorage.setItem('fixture:skillCount', String(genericSkillList.children.length));
+      }
+      document.querySelector('#add-generic-skill').addEventListener('click', addGenericSkill);
+      for (let index = 0, count = Number(sessionStorage.getItem('fixture:skillCount') || 0); index < count; index += 1) addGenericSkill();
+      document.querySelector('form').addEventListener('input', (event) => {
+        log.push(`input: ${event.target.id || event.target.name}`);
+        document.querySelector('#events').textContent = log.join('\n');
+      });
+      document.querySelector('form').addEventListener('change', (event) => {
+        log.push(`change: ${event.target.id || event.target.name}`);
+        document.querySelector('#events').textContent = log.join('\n');
+      });
+    </script>
+  </body>
+</html>

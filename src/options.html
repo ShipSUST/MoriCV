@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mori CV 资料设置</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body class="options-page">
+    <header class="options-header">
+      <div>
+        <p class="eyebrow">MORI CV SETTINGS</p>
+        <h1>个人资料设置</h1>
+        <p class="subtle">JSON 是唯一资料主档；每次复制、扫描和填写前重新读取。文件不可读时暂停这些操作，撤销和原填写核验仍可用。</p>
+      </div>
+      <div class="header-actions">
+        <button id="import-button" class="button secondary" type="button">加载资料文件</button>
+        <button id="export-button" class="button secondary" type="button">另存资料文件</button>
+        <button id="save-button" class="button primary" type="button">保存全部修改</button>
+      </div>
+    </header>
+
+    <main class="options-main">
+      <aside class="settings-sidebar">
+        <section class="settings-card">
+          <h2>自动填写设置</h2>
+          <div class="field-control">
+            <span>匹配灵敏度</span>
+            <div id="confidence-presets" class="preset-group" role="radiogroup" aria-label="匹配灵敏度"></div>
+            <details class="advanced-confidence">
+              <summary>高级：自定义阈值</summary>
+              <label class="field-control">
+                <span>最低匹配分数（0–100）</span>
+                <input id="confidence" type="number" min="0" max="100" step="1">
+              </label>
+            </details>
+            <small>分数表示网页字段与资料条目的文字相似程度。越灵敏，自动匹配的范围越大，也越需要复核。此设置影响普通字段的模糊匹配；专用适配器的精确记录映射不依赖此门槛。资料身份、日期精度等限制始终保留。</small>
+          </div>
+          <label class="check-control danger-text"><input id="settings-overwrite" type="checkbox"> 允许覆盖已有内容</label>
+        </section>
+
+        <section class="settings-card">
+          <h2>本地资料文件</h2>
+          <p class="subtle">JSON 是可携带主档，Chrome 保存一份工作副本。通过“加载资料文件”或“另存资料文件”建立关联后，“保存全部修改”会同步写入该 JSON。</p>
+          <p id="file-status" class="file-status">正在检查关联文件…</p>
+        </section>
+
+        <button id="reset-profile" class="text-danger-button" type="button">清空为默认空白模板</button>
+      </aside>
+
+      <section class="editor-area">
+        <div class="editor-toolbar">
+          <label class="search-box editor-search">
+            <span aria-hidden="true">⌕</span>
+            <input id="options-search" type="search" placeholder="筛选普通资料或结构化经历…" autocomplete="off">
+          </label>
+          <span id="options-count" class="count"></span>
+        </div>
+        <div id="entry-editor" class="entry-editor"></div>
+      </section>
+    </main>
+
+    <input id="import-file" type="file" accept="application/json,.json" hidden>
+    <div id="toast" class="toast" role="status"></div>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

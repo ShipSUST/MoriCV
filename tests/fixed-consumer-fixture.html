@@ -1,0 +1,21 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><title>匿名固定资料填写边界</title>
+<style>label{display:block;margin:15px}input,textarea{width:360px;min-height:28px}</style>
+<body><h1>匿名普通表单</h1>
+<label>姓名<input id="name"></label>
+<label>亲属姓名<input id="relative-name"></label>
+<label>出生地<input id="birth"></label>
+<label>籍贯<input id="native"></label>
+<label>毕业时间<input id="graduation"></label>
+<label>预计毕业日期<input id="expected"></label>
+<label>毕业年份<input id="year"></label>
+<label>全日制最高学历<input id="highest"></label>
+<label>自我评价<textarea id="self"></textarea></label>
+<label>任意备注<textarea id="note"></textarea></label>
+<label>家庭地址<input id="home-address"></label>
+<label>家庭所在地<input id="home-location"></label>
+<label>紧急联系人<input id="emergency-name"></label>
+<label>紧急联系人电话<input id="emergency-phone"></label>
+<script>globalThis.chrome={runtime:{onMessage:{addListener(fn){globalThis.__resumeHelperListener=fn;}}}};</script>
+<script src="/src/shared/matcher-core.js"></script><script src="/src/shared/category-runtime.js"></script><script src="/src/content/fill.js"></script>
+<script type="module">import {runFixedConsumers} from '/fixed-consumer-scenarios.js';globalThis.__recordRunner=runFixedConsumers().catch(error=>({error:error.stack,checks:globalThis.__recordProgress?.checks||[]}));</script>
+</body></html>

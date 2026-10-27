@@ -1,0 +1,20 @@
+<!doctype html><html data-bosc-anonymous="form-v1"><meta charset="utf-8"><title>BOSC anonymous observed form</title>
+<style>body{font:16px sans-serif}.form-item{margin:15px}label{display:block}.common-unmodeled-layer{position:fixed;top:10px;right:10px;background:white;padding:10px;border:1px solid;z-index:10}.area-item-container{margin:5px}</style>
+<main class="form-root"></main><script src="/chinalife-zhiye-controls.js"></script><script>
+for(const key of Object.keys(specs))delete specs[key];
+specs.basic=['个人信息',[['name','姓名'],['phone','手机号码'],['ethnicity','民族','constant',['虚构民族甲','虚构民族乙']],['region','籍贯（具体到市/区）','region'],['birth','出生日期','day'],['joining','政治面貌参加年月','day'],['graduation','毕业时间','day'],['health','健康状况','choice',['虚构健康候选甲','虚构健康候选乙']],['highestLevel','全日制最高学历','choice',['硕士研究生','大学本科']],['highestDegree','全日制最高学位','choice',['硕士','学士']],['highestStudy','最高学历学习形式','choice',['统招全日制','统招非全日制']]]];
+specs.awards=['获奖情况',[['type','获奖级别','choice',['省区级','国家级']],['name','获奖项'],['issuer','授奖单位'],['start','获奖时间','day']]];
+specs.educations=['教育经历',[['start','开始时间','month'],['end','结束时间','month'],['studyType','学习形式','choice',['统招全日制','统招非全日制']],['educationLevel','学历','choice',['硕士研究生','大学本科']],['academicDegree','学位','choice',['硕士','学士']],['schoolKind','院校类别','choice',['虚构学校类型']],['school','学校名称'],['college','学院名称'],['majorKind','专业类别','choice',['虚构专业类型']],['major','专业名称'],['totalScore','满绩点/总分'],['gpa','平均绩点/平均分'],['rank','成绩排名','choice',['前10%','前20%']]]];
+specs.relationships=['家庭情况',[['relation','称谓','choice',['父亲','母亲']],['name','姓名'],['birthDate','出生日期','day'],['politicalStatus','政治面貌','choice',['群众','中共党员']],['employer','工作单位'],['department','工作部门'],['jobTitle','职务']]];
+specs.papers=['论文/专著',[['name','名称'],['venue','所属期刊'],['publishedAt','发布时间','day'],['abstract','主要内容','textarea'],['authorOrder','作者顺序'],['description','个人主要贡献']]];
+specs.internships=['实习经历',[['start','开始时间','month'],['end','结束时间','month'],['company','单位名称'],['location','实习地点','region'],['department','部门'],['position','岗位'],['description','实习内容及收获','textarea']]];
+specs.work=['工作经历',[['start','开始时间','month'],['end','结束时间','month'],['location','工作地点','region'],['company','公司名称'],['department','部门'],['position','职位名称'],['supervisor','汇报对象'],['description','主要职责及考核情况','textarea']]];
+specs.foreignLanguages=['语言能力',[['language','语言类型','choice',['英语','日语']],['certName','证书名称'],['issuer','颁发单位'],['obtainedAt','获证日期','day'],['score','成绩'],['proficiency','掌握程度','choice',['精通','良好','一般']]]];
+specs.certifications=['证书',[['certType','证书种类','choice',['职业资格','其他']],['name','证书名称'],['issuer','颁发机构'],['obtainedAt','获得时间','day']]];
+nodes[1].label='全国';for(const [id,label]of [['11','匿名省'],['111','示例市'],['1111','虚构区']])nodes.find(node=>node.id===id).label=label;
+ChinalifeFixture.reset();ChinalifeFixture.add('awards');ChinalifeFixture.add('educations');
+ChinalifeFixture.field('internships','location').fixture.setAllLevelDisplay(false);
+for(const item of document.querySelectorAll('.form-item')){const label=item.querySelector('label'),title=document.createElement('div'),control=document.createElement('div');title.className='form-item__title';control.className='form-item__control';title.append(label);for(const child of Array.from(item.childNodes))control.append(child);item.append(title,control);}
+ChinalifeFixture.input('basic','name').value='网页已有姓名';globalThis.BoscFixtureReady=true;
+document.addEventListener('BOSC_ANONYMOUS_FAULT',event=>{const fault=JSON.parse(event.detail);if(fault.kind==='multiConstant')ChinalifeFixture.multiConstant=fault.value;if(fault.kind==='multiRegion')ChinalifeFixture.multiRegionMode=fault.value;});
+</script><script src="/src/content/bosc.js"></script><script src="/src/content/chinalife-readback.js"></script></html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN" data-resume-helper-fixture="moka-date-region">
+<head><meta charset="utf-8"><title>匿名 Moka 年月与地区控件</title>
+<style>
+body {font:14px/1.5 system-ui,sans-serif;margin:24px;color:#263238} [hidden]{display:none!important}
+.apply-field-local {margin:20px 0}.title-local {margin-bottom:5px;font-weight:bold}
+.sd-Dropdown-container-local {position:relative;display:inline-block;border:1px solid #ddd;padding:8px}
+input {min-width:270px;padding:5px}.sd-Input-display-value-local {display:inline-block;min-width:80px}
+.sd-Dropdown-dropdown-local {position:absolute;z-index:20;top:100%;left:0;background:white;border:1px solid #78909c;padding:12px;min-width:320px}
+.sd-basic-header-local {display:flex;align-items:center;justify-content:space-between}
+.sd-basic-month-grid-local {display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.sd-basic-year-item-local {padding:7px;cursor:pointer}.sd-basic-year-item-local:hover {background:#e3f2fd}
+.sd-basic-item-disabled-local {color:#b0bec5;cursor:not-allowed}
+.sd-Tabs-local {display:flex;gap:6px}.sd-Tabs-tab-local {cursor:pointer;padding:6px}.sd-Tabs-tab-local.active {border-bottom:2px solid #1976d2}
+.page-container {display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.sd-Tag-container-local {padding:6px;border:1px solid #ddd;cursor:pointer}
+.sd-Input-clear-icon-local {margin-left:6px;cursor:pointer}.sd-Menu-content-item-local {padding:7px;cursor:pointer}
+</style></head>
+<body>
+<p>本地匿名受控组件；不包含招聘申请数据，也不与外部服务器通信。</p>
+<div class="apply-block-local" data-nav-id="block-basicInfo"><div class="apply-fields-local" id="anonymous-fields"></div></div>
+<script>
+'use strict';
+const MONTHS = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+const REGIONS = [{label:'示例省甲',children:[{label:'示例市甲',children:[{label:'示例区甲'},{label:'示例区乙'}]}]}, {label:'示例省乙',children:[{label:'示例市乙',children:[{label:'示例区丙'}]}]}];
+const state = {values:{birthday:'',other_month:'',hometown:'',single_city:''},internalDates:{birthday:'',other_month:''},commits:[],opens:{},clicks:{},pending:{}};
+const controls = new Map();
+function closeMenus() { for (const control of controls.values()) {if (control.popup) control.popup.hidden = true; control.input.setAttribute('aria-expanded','false');} }
+function setCommitted(key,value,source) {
+  state.values[key] = value; const control = controls.get(key); control.input.value = value; control.display.textContent = value;
+  if (key === 'birthday' || key === 'other_month') state.internalDates[key] = value ? `${value}-01` : '';
+  state.commits.push({key,value,internalDate:state.internalDates[key] || '',source});
+  control.input.dispatchEvent(new Event('change',{bubbles:true}));
+}
+function control(key,label,placeholder,kind) {
+  const field = document.createElement('div'); field.className = 'apply-field-local';
+  const title = document.createElement('div'); title.className = 'title-local'; title.textContent = label; field.append(title);
+  const root = document.createElement('div'); root.className = 'sd-Dropdown-container-local';
+  const select = document.createElement('div'); select.className = 'sd-Select-container-local';
+  const display = document.createElement('span'); display.className = 'sd-Input-display-value-local';
+  const input = document.createElement('input'); input.id = `anonymous-${key}`; input.placeholder = placeholder; input.readOnly = true; input.type = 'text'; input.setAttribute('aria-controls',`${input.id}-popup`); input.setAttribute('aria-expanded','false');
+  if (kind !== 'month') input.setAttribute('role','combobox');
+  for (const event of ['input','change']) input.addEventListener(event,() => {input.value = state.values[key]; display.textContent = state.values[key];});
+  const clear = document.createElement('span'); clear.className = 'sd-Input-clear-icon-local'; clear.textContent = '清除'; clear.setAttribute('role','button'); clear.setAttribute('aria-label','清空');
+  clear.onclick = event => {event.stopPropagation(); if (input.dataset.rejectClear !== '1') setCommitted(key,'','clear'); closeMenus();};
+  select.append(display,input,clear); root.append(select); field.append(root); document.querySelector('#anonymous-fields').append(field);
+  const record = {root,select,input,display,popup:null,kind,key}; controls.set(key,record);
+  input.onclick = event => {
+    event.stopPropagation(); state.clicks[key] = (state.clicks[key] || 0) + 1;
+    if (record.popup && !record.popup.hidden) {record.popup.hidden = true; input.setAttribute('aria-expanded','false'); return;}
+    closeMenus(); state.opens[key] = (state.opens[key] || 0) + 1;
+    setTimeout(() => {
+      if (kind === 'month') renderMonth(record); else if (kind === 'region') renderRegion(record); else renderSingle(record);
+      record.popup.hidden = false; input.setAttribute('aria-expanded','true');
+    },Number(input.dataset.delay || 25));
+  };
+  return record;
+}
+function popup(record) {
+  if (!record.popup) {const node = document.createElement('div'); node.id = `${record.input.id}-popup`; node.className = 'sd-Dropdown-dropdown-local'; node.hidden = true; record.root.append(node); record.popup = node;}
+  return record.popup;
+}
+function renderMonth(record) {
+  const node = popup(record); node.replaceChildren();
+  const parsed = /^(\d{4})-(\d{2})$/.exec(state.values[record.key]);
+  let year = parsed ? Number(parsed[1]) : Number(record.input.dataset.initialYear || 2026);
+  const panel = document.createElement('div'); panel.className = 'sd-panal-menu-wrapper-local'; node.append(panel);
+  function render() {
+    panel.replaceChildren();
+    const header = document.createElement('div'); header.className = 'sd-basic-header-local';
+    const previous = document.createElement('button'); previous.type = 'button'; previous.className = 'sd-basic-prev-icon-local'; previous.textContent = '前一年'; previous.onclick = () => {year--;render();};
+    const label = document.createElement('span'); label.className = 'sd-basic-selector-year-local'; label.textContent = `${year}年`;
+    const next = document.createElement('button'); next.type = 'button'; next.className = 'sd-basic-next-icon-local'; next.textContent = '后一年'; next.onclick = () => {year++;render();};
+    header.append(previous,label,next); panel.append(header);
+    const grid = document.createElement('div'); grid.className = 'sd-basic-month-grid-local';
+    MONTHS.forEach((name,index) => {
+      const item = document.createElement('span'); item.className = 'sd-basic-year-item-local'; item.textContent = name;
+      const month = `${year}-${String(index + 1).padStart(2,'0')}`;
+      const disabled = record.input.dataset.disabledMonth === month || record.input.dataset.disabledMonth === String(index + 1);
+      if (disabled) {item.classList.add('sd-basic-item-disabled-local'); item.setAttribute('aria-disabled','true');}
+      item.onclick = () => {if (disabled) return; if (record.input.dataset.reject !== '1') setCommitted(record.key,record.input.dataset.rewrite || month,'month'); closeMenus();}; grid.append(item);
+    }); panel.append(grid);
+  }
+  render();
+}
+function renderRegion(record) {
+  const node = popup(record); node.replaceChildren(); const selected = []; let level = 0;
+  state.pending[record.key] = selected;
+  const tabs = document.createElement('div'); tabs.className = 'sd-Tabs-local';
+  const page = document.createElement('div'); page.className = 'page-container';
+  const confirm = document.createElement('button'); confirm.type = 'button'; confirm.textContent = '确认'; confirm.disabled = true;
+  function values(index) {let nodes = REGIONS; for (let i = 0; i < index; i++) nodes = nodes.find(node => node.label === selected[i])?.children || []; return nodes;}
+  function renderPage(index) {
+    level = index; page.replaceChildren();
+    Array.from(tabs.children).forEach((tab,i) => {tab.setAttribute('aria-selected',String(i === index)); tab.classList.toggle('active',i === index);});
+    let options = values(index);
+    if (record.input.dataset.missingLevel === String(index + 1)) options = [{label:'不在路径中的地区'}];
+    if (record.input.dataset.ambiguousLevel === String(index + 1) && options.length) options = [options[0],options[0]];
+    for (const option of options) {
+      const item = document.createElement('span'); item.className = 'sd-Tag-container-local'; item.setAttribute('role','option'); item.textContent = option.label;
+      item.onclick = () => {selected.splice(index,selected.length - index,option.label); item.setAttribute('aria-selected','true'); confirm.disabled = selected.length !== 3; if (index < 2) setTimeout(() => renderPage(index + 1),Number(record.input.dataset.levelDelay || 35));}; page.append(item);
+    }
+  }
+  ['省份','城市','县区'].forEach((text,index) => {const tab = document.createElement('button'); tab.type = 'button'; tab.className = 'sd-Tabs-tab-local'; tab.setAttribute('role','tab'); tab.textContent = text; tab.onclick = () => renderPage(index); tabs.append(tab);});
+  confirm.onclick = () => {if (selected.length === 3 && record.input.dataset.reject !== '1') setCommitted(record.key,selected.join(''),'region-confirm'); closeMenus();};
+  node.append(tabs,page,confirm); renderPage(level);
+}
+function renderSingle(record) {
+  const node = popup(record); node.replaceChildren();
+  for (const value of ['示例市甲','示例市乙']) {const option = document.createElement('div'); option.className = 'sd-Menu-content-item-local'; option.setAttribute('role','option'); option.textContent = value; option.onclick = () => {setCommitted(record.key,value,'single-option');closeMenus();}; node.append(option);}
+}
+control('birthday','出生日期 (年龄)','出生日期 (年龄)','month');
+control('other_month','另一日期 (年月)','日期(年月)','month');
+const hometown = control('hometown','籍贯','请输入籍贯','region');
+renderRegion(hometown); hometown.popup.hidden = true;
+control('single_city','单级城市','请选择','single');
+document.addEventListener('keydown',event => {if (event.key === 'Escape') closeMenus();});
+globalThis.MokaDateRegionFixture = {
+  input:key => controls.get(key).input,
+  snapshot:() => structuredClone(state),
+  setInitial(key,value) {state.values[key] = value; const record = controls.get(key); record.input.value = value; record.display.textContent = value; if (Object.hasOwn(state.internalDates,key)) state.internalDates[key] = value ? `${value}-01` : ''; closeMenus();},
+  dynamicRegion() {closeMenus(); hometown.popup?.remove(); hometown.popup = null;},
+  reset() {closeMenus(); for (const record of controls.values()) {for (const key of Object.keys(record.input.dataset)) delete record.input.dataset[key]; state.values[record.key] = ''; record.input.value = ''; record.display.textContent = ''; } state.internalDates = {birthday:'',other_month:''}; state.commits = [];state.clicks = {};state.opens = {};state.pending = {}; if (!hometown.popup) {renderRegion(hometown);hometown.popup.hidden = true;} }
+};
+</script></body></html>

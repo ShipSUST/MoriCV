@@ -1,0 +1,505 @@
+{
+  "schemaVersion": 9,
+  "name": "Mori CV 匿名示例资料",
+  "updatedAt": "2026-09-20",
+  "source": "公开匿名示例；所有人物、学校、公司、项目、证件号码、联系方式和文件路径均为虚构",
+  "entries": [
+    {
+      "id": "basic.name",
+      "value": "张三"
+    },
+    {
+      "id": "basic.name_pinyin",
+      "value": "Zhang San"
+    },
+    {
+      "id": "basic.given_name",
+      "value": "San"
+    },
+    {
+      "id": "basic.family_name",
+      "value": "Zhang"
+    },
+    {
+      "id": "basic.nationality",
+      "value": "中国",
+      "optionValues": [
+        "中国",
+        "中华人民共和国"
+      ]
+    },
+    {
+      "id": "basic.id_card",
+      "value": "11010120000101001X"
+    },
+    {
+      "id": "basic.gender",
+      "value": "男",
+      "optionValues": [
+        "男",
+        "男性"
+      ]
+    },
+    {
+      "id": "basic.birth_date",
+      "value": "2000-01-01"
+    },
+    {
+      "id": "basic.ethnicity",
+      "value": "汉族",
+      "optionValues": [
+        "汉族"
+      ]
+    },
+    {
+      "id": "basic.political_status",
+      "value": "群众",
+      "optionValues": [
+        "群众"
+      ]
+    },
+    {
+      "id": "basic.party_join_date",
+      "value": ""
+    },
+    {
+      "id": "contact.phone",
+      "value": "13800000000"
+    },
+    {
+      "id": "contact.email",
+      "value": "zhangsan@example.com"
+    },
+    {
+      "id": "contact.wechat",
+      "value": "mori_cv_example"
+    },
+    {
+      "id": "location.home",
+      "value": "江苏省苏州市"
+    },
+    {
+      "id": "location.household",
+      "value": "江苏省苏州市",
+      "pathValues": [
+        [
+          "江苏省"
+        ],
+        [
+          "苏州市"
+        ]
+      ]
+    },
+    {
+      "id": "location.native_place",
+      "value": "江苏省苏州市"
+    },
+    {
+      "id": "location.birth_place",
+      "value": "江苏省南京市"
+    },
+    {
+      "id": "location.student_origin",
+      "value": "江苏省苏州市"
+    },
+    {
+      "id": "basic.graduation_date",
+      "value": "2024-06-20"
+    },
+    {
+      "id": "basic.highest_education_level",
+      "value": "硕士研究生",
+      "optionValues": [
+        "硕士研究生",
+        "硕士"
+      ]
+    },
+    {
+      "id": "basic.highest_academic_degree",
+      "value": "硕士"
+    },
+    {
+      "id": "basic.highest_study_type",
+      "value": "统招全日制",
+      "optionValues": [
+        "统招全日制",
+        "全日制"
+      ]
+    },
+    {
+      "id": "location.current",
+      "value": "上海市",
+      "pathValues": [
+        [
+          "上海市"
+        ]
+      ]
+    },
+    {
+      "id": "location.school",
+      "value": "北京市",
+      "pathValues": [
+        [
+          "北京市"
+        ]
+      ]
+    },
+    {
+      "id": "basic.marital_status",
+      "value": "未婚"
+    },
+    {
+      "id": "basic.health_status",
+      "value": "良好"
+    },
+    {
+      "id": "contact.address",
+      "value": "上海市浦东新区示例路 100 号"
+    },
+    {
+      "id": "contact.emergency_name",
+      "value": "李四"
+    },
+    {
+      "id": "contact.emergency_phone",
+      "value": "13900000000"
+    },
+    {
+      "id": "hobby.summary",
+      "value": "长跑、摄影、阅读和开源项目实践。"
+    },
+    {
+      "id": "basic.work_experience",
+      "value": "无"
+    },
+    {
+      "id": "contact.home_address",
+      "value": "江苏省苏州市示例街道 1 号"
+    },
+    {
+      "id": "basic.height",
+      "value": "175"
+    },
+    {
+      "id": "basic.weight",
+      "value": "65"
+    },
+    {
+      "id": "profile.self_evaluation",
+      "value": "具备扎实的软件开发基础和持续学习能力，重视代码质量、事实核验与团队沟通，能够将复杂任务拆解并按计划交付。"
+    },
+    {
+      "id": "career.fresh_graduate",
+      "value": "是",
+      "optionValues": [
+        "是",
+        "应届生"
+      ]
+    },
+    {
+      "id": "career.graduation_date",
+      "value": "2027-06-30"
+    },
+    {
+      "id": "career.expected_salary",
+      "value": "面议",
+      "optionValues": [
+        "面议"
+      ]
+    },
+    {
+      "id": "career.internship_available",
+      "value": "是",
+      "optionValues": [
+        "是"
+      ]
+    },
+    {
+      "id": "career.internship_start",
+      "value": "2026-07"
+    },
+    {
+      "id": "career.graduation_year",
+      "value": "2027"
+    },
+    {
+      "id": "career.interview_city",
+      "value": "上海市"
+    },
+    {
+      "id": "career.adjustment",
+      "value": "是",
+      "optionValues": [
+        "是"
+      ]
+    },
+    {
+      "id": "experience.campus_summary",
+      "category": "其他",
+      "label": "校园工作经历",
+      "value": "担任学院学生科技协会项目组成员，参与技术分享、活动组织和新成员培训。"
+    },
+    {
+      "id": "skills.certificates_summary",
+      "category": "其他",
+      "label": "技能证书汇总",
+      "value": "大学英语六级；计算机技术与软件专业技术资格示例证书。"
+    },
+    {
+      "id": "skills.summary",
+      "category": "其他",
+      "label": "技能汇总",
+      "value": "编程语言：熟悉 Python、C/C++，了解 Java。\n工程工具：熟悉 Linux、Git、Conda 和常用调试工具。\n后端与数据：使用过 FastAPI、SQLite、MySQL、NumPy 和 Pandas。\nAI 基础：具备 PyTorch 模型训练、评估和部署实践。"
+    },
+    {
+      "id": "awards.summary",
+      "category": "其他",
+      "label": "奖项荣誉汇总",
+      "value": "2025年6月｜全国大学生软件创新大赛二等奖\n2024年12月｜示例大学优秀学生干部\n2024年5月｜示例大学程序设计竞赛一等奖"
+    },
+    {
+      "id": "other.career_plan",
+      "category": "其他",
+      "label": "职业规划",
+      "value": "持续学习软件工程，参与有价值的技术项目。"
+    }
+  ],
+  "records": {
+    "educations": [
+      {
+        "id": "education.example_master",
+        "school": "示例大学",
+        "college": "计算机学院",
+        "major": "计算机科学与技术",
+        "educationLevel": "硕士研究生",
+        "academicDegree": "硕士",
+        "studyType": "统招全日制",
+        "fieldOptions": {
+          "studyType": [
+            "普通高等教育",
+            "全日制"
+          ]
+        },
+        "highest": "是",
+        "start": "2024-09-01",
+        "end": "2027-06-20",
+        "laboratory": "智能软件实验室",
+        "advisor": "陈老师",
+        "research": "智能软件工程与机器学习系统",
+        "rank": "前20%",
+        "gpa": "3.60/4.00"
+      },
+      {
+        "id": "education.example_bachelor",
+        "school": "示例科技大学",
+        "college": "软件学院",
+        "major": "软件工程",
+        "educationLevel": "本科",
+        "academicDegree": "学士",
+        "studyType": "统招全日制",
+        "fieldOptions": {
+          "studyType": [
+            "普通高等教育",
+            "全日制"
+          ]
+        },
+        "highest": "否",
+        "start": "2020-09-01",
+        "end": "2024-06-20",
+        "research": "软件系统开发",
+        "rank": "前15%",
+        "gpa": "3.70/4.00"
+      }
+    ],
+    "internships": [
+      {
+        "id": "internship.example_platform",
+        "company": "示例科技有限公司",
+        "department": "平台研发部",
+        "position": "软件开发实习生",
+        "location": "上海市",
+        "refereeName": "王老师",
+        "refereeTitle": "研发经理",
+        "refereePhone": "13700000000",
+        "skills": "Python、FastAPI、SQLite、Git",
+        "start": "2025-07",
+        "end": "2025-10",
+        "current": false,
+        "description": "参与内部数据平台的接口开发、自动化测试和使用文档整理，协助定位问题并跟进修复验证。"
+      },
+      {
+        "id": "internship.example_ai",
+        "company": "示例智能研究院",
+        "department": "算法工程组",
+        "position": "算法实习生",
+        "location": "北京市",
+        "skills": "Python、PyTorch、OpenCV",
+        "start": "2026-01",
+        "end": "2026-04",
+        "current": false,
+        "description": "协助完成图像分类模型的数据清洗、训练评估和推理脚本整理，并记录实验结果。"
+      }
+    ],
+    "projects": [
+      {
+        "id": "project.example_resume_helper",
+        "name": "本地简历填写助手",
+        "start": "2026-03",
+        "end": "2026-06",
+        "current": false,
+        "role": "个人开发者",
+        "description": "开发离线浏览器扩展，使用字段别名、置信度匹配和平台适配器辅助填写招聘表单；数据仅保存在本机，不自动保存或提交。"
+      },
+      {
+        "id": "project.example_vision",
+        "name": "轻量级视觉检测系统",
+        "start": "2025-03",
+        "end": "2025-09",
+        "current": false,
+        "role": "算法负责人",
+        "description": "完成数据清洗、模型训练、指标评估和 ONNX 推理部署，在示例数据集上验证完整流程。"
+      },
+      {
+        "id": "project.example_data_platform",
+        "name": "课程数据分析平台",
+        "start": "2024-10",
+        "end": "2025-01",
+        "current": false,
+        "role": "后端开发",
+        "description": "使用 FastAPI、Pydantic 和 SQLite 构建数据导入、查询和统计接口，并编写接口测试与部署说明。"
+      }
+    ],
+    "papers": [
+      {
+        "id": "paper.example_system",
+        "name": "An Example Study on Reliable Form Assistance",
+        "type": "会议论文（示例）",
+        "venue": "Example Conference on Form Assistance（虚构会议）",
+        "authorOrder": "第一作者",
+        "publishedAt": "2026-05-20",
+        "link": "https://example.com/paper",
+        "description": "用于展示论文结构化字段的虚构条目，不代表真实发表成果。"
+      }
+    ],
+    "awards": [
+      {
+        "id": "competition.example_software",
+        "awardCategory": "竞赛获奖",
+        "name": "全国大学生软件创新大赛二等奖",
+        "start": "2025-06",
+        "end": "2025-06",
+        "current": false,
+        "type": "国家级",
+        "grade": "二等奖",
+        "result": "二等奖",
+        "issuer": "示例竞赛组委会",
+        "description": "以课程数据分析平台参赛，负责后端接口、数据处理和演示材料整理。"
+      },
+      {
+        "id": "competition.example_programming",
+        "awardCategory": "竞赛获奖",
+        "name": "示例大学程序设计竞赛一等奖",
+        "start": "2024-05",
+        "end": "2024-05",
+        "current": false,
+        "type": "校级",
+        "grade": "一等奖",
+        "result": "一等奖",
+        "issuer": "示例大学教务处",
+        "description": "完成算法设计、编码与现场调试。"
+      },
+      {
+        "id": "honor.example_student_leader",
+        "awardCategory": "荣誉称号",
+        "name": "示例大学优秀学生干部",
+        "start": "2024-12",
+        "type": "校级",
+        "result": "优秀学生干部",
+        "issuer": "示例大学",
+        "description": "因学生工作和志愿服务表现获评校级优秀学生干部。"
+      }
+    ],
+    "programmingLanguages": [
+      {
+        "id": "language.example_python",
+        "name": "Python",
+        "level": "熟悉"
+      },
+      {
+        "id": "language.example_java",
+        "name": "Java",
+        "level": "了解"
+      },
+      {
+        "id": "language.example_c",
+        "name": "C",
+        "level": "熟悉"
+      },
+      {
+        "id": "language.example_cpp",
+        "name": "C++",
+        "level": "熟悉"
+      },
+      {
+        "id": "language.example_matlab",
+        "name": "Matlab",
+        "level": "熟悉"
+      },
+      {
+        "id": "language.example_linux",
+        "name": "Linux",
+        "level": "熟悉"
+      }
+    ],
+    "foreignLanguages": [
+      {
+        "id": "foreign.example_english",
+        "language": "英语",
+        "proficiency": "熟练",
+        "listeningSpeaking": "能够进行日常工作沟通",
+        "readingWriting": "能够阅读和撰写英文技术文档"
+      }
+    ],
+    "certifications": [
+      {
+        "id": "cert.example_cet6",
+        "name": "CET-6",
+        "certType": "外语",
+        "issuer": "教育部教育考试院",
+        "obtainedAt": "2022-06",
+        "score": "550"
+      },
+      {
+        "id": "cert.example_software",
+        "name": "计算机技术与软件专业技术资格（示例）",
+        "certType": "计算机",
+        "obtainedAt": "2023-11",
+        "level": "合格"
+      }
+    ],
+    "relationships": [
+      {
+        "id": "relative.example_father",
+        "relation": "父亲",
+        "name": "张大明",
+        "gender": "男",
+        "birthDate": "1970-03-15",
+        "employer": "示例制造有限公司",
+        "jobTitle": "工程师",
+        "employed": "在岗",
+        "politicalStatus": "群众"
+      },
+      {
+        "id": "relative.example_mother",
+        "relation": "母亲",
+        "name": "王小红",
+        "gender": "女",
+        "birthDate": "1972-08-20",
+        "employer": "示例市第一中学",
+        "jobTitle": "教师",
+        "employed": "在岗",
+        "politicalStatus": "中共党员"
+      }
+    ]
+  }
+}

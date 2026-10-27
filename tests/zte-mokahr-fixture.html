@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN" data-resume-helper-fixture="zte">
+  <head><meta charset="utf-8"><title>中兴 MokaHR 模拟页</title></head>
+  <body>
+    <div class="apply-block-test" data-nav-id="block-basicInfo">
+      <div class="apply-fields-test">
+        <div class="apply-field-test"><div class="title-test">姓名</div><input placeholder="姓名"></div>
+        <div class="apply-field-test"><div class="title-test">姓名拼音（如:Li Xiaolong/Li Lin)</div><input placeholder="姓名拼音（如:Li Xiaolong/Li Lin)"></div>
+        <div class="apply-field-test"><div class="title-test">手机号码</div>
+          <div class="sd-Dropdown-container-test"><div class="sd-Select-container-test"><input placeholder="请选择"></div></div>
+          <input placeholder="请输入手机号">
+        </div>
+        <div class="apply-field-test"><div class="title-test">邮箱</div><input placeholder="邮箱"></div>
+        <div class="apply-field-test"><div class="title-test">是否接受其他工作地调剂</div><input placeholder="请选择"></div>
+      </div>
+    </div>
+    <div class="apply-block-test" data-nav-id="block-projectInfo">
+      <div class="blockTitle-test"><span>项目经验</span><button type="button" id="add-project">添加</button></div>
+    </div>
+    <div class="apply-block-test" data-nav-id="block-educationInfo"><div class="blockTitle-test"><span>教育背景</span><button type="button">添加</button></div></div>
+    <div class="apply-block-test" data-nav-id="block-practiceInfo"><div class="blockTitle-test"><span>实习经历</span><button type="button">添加</button></div></div>
+    <div class="apply-block-test" data-nav-id="block-34807"><div class="blockTitle-test"><span>论文</span><button type="button">添加</button></div></div>
+    <div class="apply-block-test" data-nav-id="block-32781"><div class="blockTitle-test"><span>竞赛</span><button type="button">添加</button></div></div>
+    <div class="apply-block-test" data-nav-id="block-32786"><div class="blockTitle-test"><span>荣誉奖项</span><button type="button">添加</button></div></div>
+    <div class="apply-block-test" data-nav-id="block-30701"><div class="blockTitle-test"><span>编程语言能力</span><button type="button">添加</button></div></div>
+    <div class="apply-block-test" data-nav-id="block-30706"><div class="blockTitle-test"><span>外语能力</span><button type="button">添加</button></div></div>
+    <script>
+      const block = document.querySelector('[data-nav-id="block-projectInfo"]');
+      const defaultMonthMode = new URLSearchParams(location.search).get('moka') === 'default-month';
+      const threePeakMode = new URLSearchParams(location.search).get('moka') === '3peak';
+      function dropdown(placeholder, values = null, searchable = false) {
+        const wrap = document.createElement('div'); wrap.className = 'sd-Dropdown-container-test';
+        const select = document.createElement('div'); select.className = 'sd-Select-container-test';
+        const display = document.createElement('span'); display.className = 'sd-Input-display-value-test';
+        const input = document.createElement('input'); input.placeholder = placeholder;
+        if (values) input.dataset.values = JSON.stringify(values);
+        if (searchable) input.dataset.search = 'true';
+        const clear = document.createElement('span'); clear.className = 'sd-Input-clear-icon-test'; clear.textContent = '清除';
+        clear.addEventListener('click', (event) => { event.stopPropagation(); input.value = ''; display.textContent = ''; input.dispatchEvent(new Event('change', {bubbles:true})); closeMenus(); });
+        select.append(display, input, clear); wrap.append(select); return wrap;
+      }
+      function field(label, controls) {
+        const item = document.createElement('div'); item.className = 'apply-field-test';
+        const title = document.createElement('div'); title.className = 'title-test'; title.textContent = label;
+        item.append(title, ...controls); return item;
+      }
+      function textControl(placeholder = '', textarea = false, type = 'text') {
+        const control = document.createElement(textarea ? 'textarea' : 'input');
+        if (!textarea) control.type = type;
+        control.placeholder = placeholder;
+        return control;
+      }
+      function dayControl() {
+        const wrap = document.createElement('div'); wrap.className = 'sd-Dropdown-container-test';
+        const input = textControl('日期（年月日）'); input.readOnly = true; input.dataset.dayPicker = 'true';
+        wrap.append(input); return wrap;
+      }
+      function rangeField(label) {
+        const dateControls = [dropdown('年'), dropdown('月'), dropdown('年'), dropdown('月')];
+        if (defaultMonthMode) {
+          // Moka's displayed value is separate from its empty search input.
+          dateControls.forEach((control, index) => {
+            const input = control.querySelector('input'); input.placeholder = '';
+            input.dataset.values = JSON.stringify(index % 2
+              ? Array.from({length: 12}, (_, i) => String(i + 1))
+              : Array.from({length: 31}, (_, i) => String(2000 + i)));
+            input.dataset.displayOnly = 'true';
+            if (index % 2) control.querySelector('.sd-Input-display-value-test').textContent = '1';
+          });
+        }
+        const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; dateControls.push(checkbox);
+        const item = field(label, dateControls); item.classList.add('month-range-select'); return item;
+      }
+      const schemas = {
+        'block-projectInfo': () => [rangeField('起止时间'), field('项目名称', [textControl('项目名称')]), field('职责', [textControl('职责')]), field('项目中职责', [textControl('项目中职责', true)]), field('项目描述', [textControl('项目描述', true)]), field('项目描述及成果', [textControl('', true)])],
+        'block-educationInfo': () => [rangeField('就读时间'), field('学校名称', [dropdown('请输入就读学校', ['示例大学', '示例科技大学'], true)]), field('学院／系', [textControl('学院／系')]), field('专业名称', [dropdown('请输入专业名称', ['示例专业', '软件工程'], true)]), field('学历', [dropdown('请选择')]), field('学历类型（校招）', [dropdown('请选择')]), field('学习形式', [dropdown('请选择')]), field('是否最高学历', [dropdown('请选择')]), field('实验室名称', [textControl('实验室名称')]), field('导师姓名', [textControl('导师姓名')]), field('研究方向', [textControl('研究方向')]), field('成绩排名', [dropdown('请选择')]), field('GPA分数', [textControl('GPA分数', false, 'number')])],
+        'block-practiceInfo': () => [rangeField('起止时间'), field('公司名称', [textControl('公司名称')]), field('职位名称', [textControl('职位名称')]), field('实习使用技能', [textControl('实习使用技能')]), field('经历描述及成果', [textControl('', true)])],
+        'block-34807': () => [field('论文名称', [textControl('论文名称')]), field('论文类型', [dropdown('请选择')]), field('发表会议', [textControl('发表会议')]), field('作者顺序', [dropdown('请选择')]), field('发表时间', [dayControl()]), field('论文链接', [textControl('论文链接')]), field('论文描述', [textControl('', true)])],
+        'block-32781': () => [rangeField('参赛时间'), field('竞赛名称', [textControl('竞赛名称')]), field('竞赛类型', [dropdown('请选择')]), field('竞赛成绩', [textControl('竞赛成绩')]), field('竞赛描述', [textControl('', true)])],
+        'block-32786': () => [field('获奖时间', [dropdown('年'), dropdown('月')]), field('奖项名称', [textControl('奖项名称')]), field('奖项类型', [dropdown('请选择')]), field('奖项成绩', [textControl('奖项成绩')]), field('奖项描述', [textControl('', true)])],
+        'block-30701': () => [field('编程语言名称', [dropdown('请选择')]), field('掌握程度', [dropdown('请选择')])],
+        'block-30706': () => [field('语言种类', [dropdown('请选择')]), field('认证类型', [textControl('认证类型')]), field('成绩', [textControl('成绩')])]
+      };
+      if (threePeakMode) {
+        schemas['block-34807'] = () => [field('发表时间', [dropdown('年'), dropdown('月')]), field('第几作者', [dropdown('请选择', ['第一作者', '第二作者', '第三作者', '其他'])]), field('发表平台', [textControl('发表平台')]), field('文章名称', [textControl('文章名称')])];
+        schemas['block-32786'] = () => [field('获奖时间', [dropdown('年'), dropdown('月')]), field('奖项名称', [textControl('奖项名称')])];
+      }
+      for (const [blockId, schema] of Object.entries(schemas)) {
+        const targetBlock = document.querySelector(`[data-nav-id="${blockId}"]`);
+        targetBlock.querySelector('button').addEventListener('click', () => {
+          const record = document.createElement('div'); record.className = 'apply-fields-test multi-test';
+          record.append(...schema());
+          if (blockId === 'block-educationInfo') record.append(field('学位', [dropdown('请选择', ['硕士', '学士'])]));
+          const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = '删除';
+          remove.addEventListener('click', () => record.remove()); record.append(remove);
+          targetBlock.append(record);
+        });
+      }
+      if (threePeakMode) {
+        document.querySelector('[data-nav-id="block-32781"]').remove();
+        for (const [oldId, newId, title] of [['block-34807', 'block-82482', '期刊发表情况'], ['block-32786', 'block-99952', '获奖情况']]) {
+          const target = document.querySelector(`[data-nav-id="${oldId}"]`);
+          target.dataset.navId = newId;
+          target.querySelector('.blockTitle-test span').textContent = title;
+          target.querySelector('button').click();
+        }
+        const patent = document.createElement('div'); patent.className = 'apply-block-test'; patent.dataset.navId = 'block-128259';
+        patent.innerHTML = '<div class="blockTitle-test"><span>专利获取情况</span><button type="button">添加</button></div><div class="apply-fields-test"><div class="apply-field-test"><div class="title-test">专利名称</div><input placeholder="专利名称"></div></div>';
+        document.body.append(patent);
+      }
+      function closeMenus() { document.querySelectorAll('.sd-Dropdown-dropdown-test').forEach((menu) => menu.remove()); }
+      function showMenu(input, values) {
+        closeMenus();
+        const menu = document.createElement('div'); menu.className = 'sd-Dropdown-dropdown-test';
+        for (const value of values) {
+          const option = document.createElement('div'); option.className = 'sd-Menu-content-item-test';
+          const text = document.createElement('span'); text.textContent = value; option.append(text);
+          option.addEventListener('click', (clickEvent) => {
+            clickEvent.stopPropagation();
+            input.value = input.dataset.displayOnly ? '' : value;
+            const display = input.closest('.sd-Select-container-test')?.querySelector('.sd-Input-display-value-test');
+            if (display) display.textContent = value;
+            input.dispatchEvent(new Event('change', {bubbles:true}));
+            menu.remove();
+          });
+          menu.append(option);
+        }
+        document.body.append(menu);
+      }
+      function showDayPicker(input) {
+        closeMenus();
+        const popup = document.createElement('div'); popup.className = 'sd-Dropdown-dropdown-test';
+        const panel = document.createElement('div'); panel.className = 'sd-panal-menu-wrapper-test'; popup.append(panel);
+        let year = 2026; let month = 9;
+        const renderCalendar = () => {
+          panel.replaceChildren();
+          const header = document.createElement('div');
+          const yearHeader = document.createElement('span'); yearHeader.className = 'sd-basic-selector-year-test'; yearHeader.textContent = `${year}年`;
+          const monthHeader = document.createElement('span'); monthHeader.className = 'sd-basic-selector-month-test'; monthHeader.textContent = `${['一','二','三','四','五','六','七','八','九','十','十一','十二'][month - 1]}月`;
+          header.append(yearHeader, monthHeader); panel.append(header);
+          const dates = document.createElement('div');
+          for (let day = 1; day <= 28; day += 1) {
+            const wrapper = document.createElement('span'); wrapper.className = 'sd-basic-item-wrapper-test';
+            const item = document.createElement('span'); item.className = 'sd-basic-date-item-test'; item.textContent = String(day);
+            item.addEventListener('click', () => { input.value = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`; input.dispatchEvent(new Event('change', {bubbles:true})); popup.remove(); });
+            wrapper.append(item); dates.append(wrapper);
+          }
+          panel.append(dates);
+          yearHeader.addEventListener('click', () => {
+            panel.replaceChildren();
+            const range = document.createElement('span'); range.className = 'sd-basic-selector-year-test'; range.textContent = '2020年 - 2029年'; panel.append(range);
+            for (let value = 2020; value <= 2029; value += 1) {
+              const item = document.createElement('span'); item.className = 'sd-basic-year-item-test'; item.textContent = `${value}年`;
+              item.addEventListener('click', () => { year = value; renderCalendar(); }); panel.append(item);
+            }
+          });
+          monthHeader.addEventListener('click', () => {
+            panel.replaceChildren();
+            for (let value = 1; value <= 12; value += 1) {
+              const item = document.createElement('span'); item.className = 'sd-basic-year-item-test'; item.textContent = `${['一','二','三','四','五','六','七','八','九','十','十一','十二'][value - 1]}月`;
+              item.addEventListener('click', () => { month = value; renderCalendar(); }); panel.append(item);
+            }
+          });
+        };
+        renderCalendar(); document.body.append(popup);
+      }
+      document.addEventListener('input', (event) => {
+        const input = event.target.closest('input[data-search="true"]');
+        if (!input) return;
+        const query = input.value;
+        const values = JSON.parse(input.dataset.values || '[]').filter((value) => value.includes(query));
+        setTimeout(() => showMenu(input, values), 120);
+      });
+      document.addEventListener('click', (event) => {
+        const dayInput = event.target.closest('input[data-day-picker="true"]');
+        if (dayInput) { showDayPicker(dayInput); return; }
+        const input = event.target.closest('.sd-Dropdown-container-test input');
+        if (!input) return;
+        if (input.dataset.search === 'true') { showMenu(input, []); return; }
+        const label = input.closest('.apply-field-test')?.querySelector('.title-test')?.textContent || '';
+        const values = input.dataset.values ? JSON.parse(input.dataset.values)
+          : input.placeholder === '年' ? Array.from({length: 31}, (_, i) => String(2000 + i))
+          : input.placeholder === '月' ? Array.from({length: 12}, (_, i) => String(i + 1))
+          : label === '学历' ? ['本科', '硕士研究生']
+          : label === '学历类型（校招）' ? ['本科', '硕士']
+          : label === '学习形式' ? ['统招全日制', '全日制']
+          : label === '是否最高学历' ? ['是', '否']
+          : label === '成绩排名' ? ['前20%', '前30%', '前50%']
+          : label === '论文类型' ? ['SCI', 'EI']
+          : label === '作者顺序' ? ['前三作者', '第一作者']
+          : label === '竞赛类型' || label === '奖项类型' ? ['国家级', '省级', '校级']
+          : label === '编程语言名称' ? ['Python', 'C/C++', 'Matlab', 'Java']
+          : label === '掌握程度' ? ['熟练', '熟悉', '了解']
+          : label === '语言种类' ? ['英语', '日语'] : ['+86', '+1'];
+        showMenu(input, values);
+      });
+      if (defaultMonthMode) document.querySelector('[data-nav-id="block-educationInfo"] button').click();
+    </script>
+  </body>
+</html>

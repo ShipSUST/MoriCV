@@ -1,0 +1,20 @@
+{
+  "name": "personal-resume-helper-extension",
+  "version": "2.0.4",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Offline personal Chrome extension for copying and filling recruiting resume fields.",
+  "scripts": {
+    "generate:example": "node scripts/generate-example-profile.mjs",
+    "migrate:profile": "node scripts/migrate-profile-v7.mjs",
+    "build": "npm run generate:example && node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node --test --test-isolation=none tests/*.test.mjs",
+    "verify": "npm run check && npm test && npm run build",
+    "privacy": "node scripts/privacy-scan.mjs",
+    "fixture": "node scripts/serve-fixture.mjs",
+    "e2e": "node scripts/chrome-e2e.mjs",
+    "generate:categories": "node scripts/category-runtime.mjs"
+  }
+}

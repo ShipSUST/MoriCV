@@ -1,0 +1,19 @@
+<!doctype html><html lang="zh-CN" data-seyond-anonymous="form-v1"><meta charset="utf-8"><title>Seyond anonymous observed form</title>
+<style>body{font:16px sans-serif}.form-item{margin:12px}input,textarea{width:250px}label{display:block}.common-unmodeled-layer{position:fixed;right:10px;top:10px;background:white;border:1px solid;padding:10px;z-index:10}.phoenix-calendar-cell{padding:6px}.phoenix-calendar-header{display:flex;gap:15px}</style>
+<main class="form-root"></main>
+<!-- Shared fictional Phoenix DOM/events, not a downloaded website component. -->
+<script src="/chinalife-zhiye-controls.js"></script>
+<script>
+if(location.hostname!=='127.0.0.1')throw Error('Anonymous localhost only');
+for(const key of Object.keys(specs))delete specs[key];
+specs.papers=['论文/专著',[['publishedAt','发布时间','day'],['name','名称'],['venue','所属期刊'],['authorOrder','作者顺序'],['yearIssue','年度/期次']]];
+specs.awards=['获奖情况',[['start','获奖时间','day'],['name','获奖项'],['type','获奖级别','choice',['班组级','院校级','县市级','省区级','国家级','国际级','公司级','集团级']],['description','获奖描述','textarea']]];
+ChinalifeFixture.reset();ChinalifeFixture.add('awards');
+const minimal=new URLSearchParams(location.search).has('minimal');
+if(minimal){document.querySelector('[data-anonymous-section="awards"]').remove();for(const item of document.querySelectorAll('.form-item'))if(item.dataset.key!=='name')item.querySelector('input')?.remove();}
+for(const item of document.querySelectorAll('.form-item')){const label=item.querySelector('label'),title=document.createElement('div'),control=document.createElement('div');title.className='form-item__title form-item__title--right';control.className='form-item__control';title.append(label);for(const node of Array.from(item.childNodes))control.append(node);item.append(title,control);}
+globalThis.SeyondFixtureReady=true;
+document.addEventListener('SEYOND_ANONYMOUS_FAULT',event=>{const data=JSON.parse(event.detail);if(data.kind==='wrongDateOnce')ChinalifeFixture.wrongDateOnce=true;if(data.kind==='dateMetadata'){const input=ChinalifeFixture.input('papers','publishedAt');input.__reactFiberAnonymous.memoizedProps.format=data.format;}if(data.kind==='laterDate')ChinalifeFixture.field('papers','publishedAt').fixture.commit('2025-03-12');if(data.kind==='multipleLevel')ChinalifeFixture.input('awards','type',1).__reactFiberAnonymous.memoizedProps.multiple=true;});
+</script><script src="/src/content/chinalife-readback.js"></script>
+<script src="/src/shared/matcher-core.js"></script><script src="/src/shared/category-runtime.js"></script><script>ResumeHelperCore.detectSite=()=> 'zhiye';ResumeHelperCore.detectZhiyeTemplate=()=> 'seyond';</script>
+<script type="module">if(!new URLSearchParams(location.search).has('isolated')){const script=document.createElement('script');script.src='/src/content/fill.js';document.head.append(script);await new Promise(resolve=>script.onload=resolve);const {runSeyond}=await import('/seyond-zhiye-scenarios.js');globalThis.__recordRunner=runSeyond().catch(error=>({error:error.stack,checks:globalThis.__recordProgress?.checks||[]}));}</script></html>

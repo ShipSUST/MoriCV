@@ -1,0 +1,660 @@
+[
+  {
+    "key": "educations",
+    "heading": {
+      "source": "^(教育经历|教育背景|education|education experience)$",
+      "flags": "i"
+    },
+    "fields": [
+      {
+        "key": "school",
+        "aliases": [
+          "学校名称",
+          "毕业院校",
+          "院校名称",
+          "school",
+          "university"
+        ]
+      },
+      {
+        "key": "college",
+        "aliases": [
+          "学院",
+          "院系",
+          "college",
+          "department"
+        ]
+      },
+      {
+        "key": "major",
+        "aliases": [
+          "专业名称",
+          "所学专业",
+          "专业",
+          "major",
+          "discipline",
+          "field of study"
+        ]
+      },
+      {
+        "key": "educationLevel",
+        "aliases": [
+          "学历",
+          "education level"
+        ]
+      },
+      {
+        "key": "academicDegree",
+        "aliases": [
+          "学位",
+          "academic degree",
+          "degree"
+        ]
+      },
+      {
+        "key": "studyType",
+        "aliases": [
+          "学习形式",
+          "教育类型",
+          "学历类型",
+          "培养方式",
+          "统招方式"
+        ]
+      },
+      {
+        "key": "laboratory",
+        "aliases": [
+          "实验室",
+          "实验室名称"
+        ]
+      },
+      {
+        "key": "advisor",
+        "aliases": [
+          "导师",
+          "导师姓名"
+        ]
+      },
+      {
+        "key": "research",
+        "aliases": [
+          "研究方向",
+          "研究领域",
+          "领域方向"
+        ]
+      },
+      {
+        "key": "gpa",
+        "aliases": [
+          "GPA",
+          "平均绩点"
+        ]
+      },
+      {
+        "key": "rank",
+        "aliases": [
+          "专业排名",
+          "成绩排名"
+        ]
+      },
+      {
+        "key": "unifiedExamScore",
+        "aliases": [
+          "统考成绩",
+          "统考初试成绩",
+          "考研初试成绩"
+        ]
+      },
+      {
+        "key": "professionalCourses",
+        "aliases": [
+          "专业课程",
+          "主修课程",
+          "专业课",
+          "所学课程"
+        ]
+      },
+      {
+        "key": "start",
+        "aliases": [
+          "开始时间",
+          "入学时间",
+          "start date",
+          "from"
+        ]
+      },
+      {
+        "key": "end",
+        "aliases": [
+          "结束时间",
+          "毕业时间",
+          "end date",
+          "to"
+        ]
+      }
+    ]
+  },
+  {
+    "key": "internships",
+    "heading": {
+      "source": "^(实习经历|工作经历|实习[/／、]工作经历|internship experience|work experience|employment)$",
+      "flags": "i"
+    },
+    "fields": [
+      {
+        "key": "company",
+        "aliases": [
+          "公司名称",
+          "单位名称",
+          "company",
+          "employer",
+          "organization"
+        ]
+      },
+      {
+        "key": "position",
+        "aliases": [
+          "职位名称",
+          "岗位名称",
+          "position",
+          "job title",
+          "role"
+        ]
+      },
+      {
+        "key": "description",
+        "aliases": [
+          "经历描述及成果",
+          "工作内容",
+          "工作职责",
+          "description",
+          "responsibilities",
+          "achievements"
+        ]
+      },
+      {
+        "key": "start",
+        "aliases": [
+          "开始时间",
+          "入职时间",
+          "start date",
+          "from"
+        ]
+      },
+      {
+        "key": "end",
+        "aliases": [
+          "结束时间",
+          "离职时间",
+          "end date",
+          "to"
+        ]
+      }
+    ]
+  },
+  {
+    "key": "projects",
+    "heading": {
+      "source": "^(项目经历|项目经验|project experience|projects)$",
+      "flags": "i"
+    },
+    "fields": [
+      {
+        "key": "name",
+        "aliases": [
+          "项目名称",
+          "项目名",
+          "project name",
+          "project title"
+        ]
+      },
+      {
+        "key": "role",
+        "aliases": [
+          "项目中职责",
+          "项目职责",
+          "职责",
+          "project role",
+          "role",
+          "position"
+        ]
+      },
+      {
+        "key": "description",
+        "aliases": [
+          "项目描述及成果",
+          "项目描述",
+          "项目内容",
+          "project description",
+          "description",
+          "achievements"
+        ]
+      },
+      {
+        "key": "start",
+        "aliases": [
+          "开始时间",
+          "start date",
+          "from"
+        ]
+      },
+      {
+        "key": "end",
+        "aliases": [
+          "结束时间",
+          "end date",
+          "to"
+        ]
+      }
+    ]
+  },
+  {
+    "key": "papers",
+    "heading": {
+      "source": "^(论文成果|论文|论文信息|发表论文|papers?|publications?)$",
+      "flags": "i"
+    },
+    "add": {
+      "source": "^(?:\\+\\s*)?(?:添加|新增)(?:一条|一项|一篇)?\\s*(?:论文|成果|记录)?$|^add(?: another)?(?: paper| publication| record)?$",
+      "flags": "i"
+    },
+    "fields": [
+      {
+        "key": "name",
+        "aliases": [
+          "论文名称",
+          "论文题目",
+          "paper title",
+          "publication title"
+        ]
+      },
+      {
+        "key": "type",
+        "aliases": [
+          "论文类型",
+          "发表类型",
+          "publication type"
+        ]
+      },
+      {
+        "key": "venue",
+        "aliases": [
+          "发表刊物",
+          "发表会议",
+          "期刊名称",
+          "会议名称",
+          "journal",
+          "conference",
+          "publication venue"
+        ]
+      },
+      {
+        "key": "authorOrder",
+        "aliases": [
+          "作者顺序",
+          "作者排名",
+          "author order"
+        ]
+      },
+      {
+        "key": "publishedAt",
+        "aliases": [
+          "发表时间",
+          "论文时间",
+          "publication date"
+        ]
+      },
+      {
+        "key": "link",
+        "aliases": [
+          "论文链接",
+          "DOI",
+          "论文地址",
+          "paper url"
+        ]
+      },
+      {
+        "key": "description",
+        "aliases": [
+          "论文描述",
+          "个人贡献",
+          "论文成果",
+          "description"
+        ]
+      }
+    ]
+  },
+  {
+    "key": "awards",
+    "heading": {
+      "source": "^(荣誉|荣誉奖项|奖项荣誉|奖项|获奖经历|竞赛|竞赛经历|竞赛获奖|竞赛、获奖与荣誉|awards?|honou?rs?)$",
+      "flags": "i"
+    },
+    "add": {
+      "source": "^(?:\\+\\s*)?(?:添加|新增)(?:一条|一项|一段)?\\s*(?:荣誉|奖项|获奖|竞赛|记录)?$|^add(?: another)?(?: award| honor| record)?$",
+      "flags": "i"
+    },
+    "legacyCollections": [
+      "competitions",
+      "honors"
+    ],
+    "fields": [
+      {
+        "key": "name",
+        "aliases": [
+          "荣誉名称",
+          "奖项名称",
+          "获奖名称",
+          "竞赛名称",
+          "award name",
+          "honor name"
+        ]
+      },
+      {
+        "key": "awardDate",
+        "aliases": [
+          "获奖时间",
+          "获奖日期",
+          "荣誉时间",
+          "颁发时间",
+          "award date",
+          "date received"
+        ]
+      },
+      {
+        "key": "type",
+        "aliases": [
+          "奖项类型",
+          "荣誉类型",
+          "奖项级别",
+          "获奖级别",
+          "award type",
+          "award level"
+        ]
+      },
+      {
+        "key": "result",
+        "aliases": [
+          "奖项成绩",
+          "获奖等级",
+          "奖项等级",
+          "获奖结果",
+          "award result"
+        ]
+      },
+      {
+        "key": "issuer",
+        "aliases": [
+          "颁奖单位",
+          "颁发单位",
+          "授予单位",
+          "主办单位",
+          "awarded by",
+          "issuer"
+        ]
+      },
+      {
+        "key": "description",
+        "aliases": [
+          "荣誉描述",
+          "奖项描述",
+          "获奖描述",
+          "竞赛描述",
+          "描述",
+          "award description",
+          "description"
+        ]
+      }
+    ]
+  },
+  {
+    "key": "programmingLanguages",
+    "heading": {
+      "source": "^(技术技能|专业技能|技能|编程语言能力|编程语言|语言能力|technical skills?|programming languages?|skills?)$",
+      "flags": "i"
+    },
+    "add": {
+      "source": "^(?:\\+\\s*)?(?:添加|新增)(?:一条|一项|一段)?\\s*(?:技能|编程语言|语言|记录)?$|^add(?: another)?(?: skill| language| record)?$",
+      "flags": "i"
+    },
+    "fields": [
+      {
+        "key": "name",
+        "aliases": [
+          "技能名称",
+          "语言名称",
+          "编程语言名称",
+          "技能",
+          "skill name",
+          "language"
+        ]
+      },
+      {
+        "key": "level",
+        "aliases": [
+          "掌握程度",
+          "熟练程度",
+          "技能水平",
+          "水平",
+          "proficiency",
+          "level"
+        ]
+      }
+    ]
+  },
+  {
+    "key": "foreignLanguages",
+    "heading": {
+      "source": "^(外语能力|外语水平|语言能力|外语|foreign languages?)$",
+      "flags": "i"
+    },
+    "add": {
+      "source": "^(?:\\+\\s*)?(?:添加|新增)(?:一条|一项|一段)?\\s*(?:外语|语言|记录)?$|^add(?: another)?(?: language| record)?$",
+      "flags": "i"
+    },
+    "fields": [
+      {
+        "key": "language",
+        "aliases": [
+          "外语名称",
+          "语种",
+          "语言种类",
+          "外语语种",
+          "language"
+        ]
+      },
+      {
+        "key": "proficiency",
+        "aliases": [
+          "外语水平",
+          "掌握程度",
+          "总体掌握程度",
+          "语言水平",
+          "proficiency",
+          "level"
+        ]
+      },
+      {
+        "key": "listeningSpeaking",
+        "aliases": [
+          "听说能力",
+          "听说",
+          "口语",
+          "听力",
+          "listening",
+          "speaking"
+        ]
+      },
+      {
+        "key": "readingWriting",
+        "aliases": [
+          "读写能力",
+          "读写",
+          "阅读写作",
+          "reading",
+          "writing"
+        ]
+      }
+    ]
+  },
+  {
+    "key": "certifications",
+    "heading": {
+      "source": "^(资格证书|证书|证书信息|技能证书|职业资格|certificat(?:e|ion)s?)$",
+      "flags": "i"
+    },
+    "add": {
+      "source": "^(?:\\+\\s*)?(?:添加|新增)(?:一条|一项|一段)?\\s*(?:证书|资格|记录)?$|^add(?: another)?(?: certificate| record)?$",
+      "flags": "i"
+    },
+    "fields": [
+      {
+        "key": "name",
+        "aliases": [
+          "证书名称",
+          "资格证书",
+          "证书",
+          "certificate name"
+        ]
+      },
+      {
+        "key": "certType",
+        "aliases": [
+          "证书类别",
+          "证书类型",
+          "认证类型",
+          "certificate type"
+        ]
+      },
+      {
+        "key": "issuer",
+        "aliases": [
+          "发证机构",
+          "颁发机构",
+          "发证单位",
+          "issuer"
+        ]
+      },
+      {
+        "key": "number",
+        "aliases": [
+          "证书编号",
+          "证书号",
+          "certificate number"
+        ]
+      },
+      {
+        "key": "obtainedAt",
+        "aliases": [
+          "取得时间",
+          "获证时间",
+          "发证日期",
+          "考试时间",
+          "date obtained"
+        ]
+      },
+      {
+        "key": "level",
+        "aliases": [
+          "结果等级",
+          "证书等级",
+          "level"
+        ]
+      },
+      {
+        "key": "score",
+        "aliases": [
+          "分数",
+          "考试成绩",
+          "成绩",
+          "score"
+        ]
+      }
+    ]
+  },
+  {
+    "key": "relationships",
+    "heading": {
+      "source": "^(亲属关系|家庭成员|家庭情况|主要家庭成员|紧急联系人|family members?|relationships?|emergency contacts?)$",
+      "flags": "i"
+    },
+    "add": {
+      "source": "^(?:\\+\\s*)?(?:添加|新增)(?:一条|一项|一位)?\\s*(?:亲属|家庭成员|联系人|记录)?$|^add(?: another)?(?: family member| relationship| contact| record)?$",
+      "flags": "i"
+    },
+    "fields": [
+      {
+        "key": "relation",
+        "aliases": [
+          "关系",
+          "与本人关系",
+          "亲属关系",
+          "称谓",
+          "relationship"
+        ]
+      },
+      {
+        "key": "name",
+        "aliases": [
+          "姓名",
+          "亲属姓名",
+          "家庭成员姓名",
+          "联系人姓名",
+          "name"
+        ]
+      },
+      {
+        "key": "gender",
+        "aliases": [
+          "性别",
+          "亲属性别",
+          "gender"
+        ]
+      },
+      {
+        "key": "birthDate",
+        "aliases": [
+          "出生日期",
+          "出生年月",
+          "生日",
+          "date of birth"
+        ]
+      },
+      {
+        "key": "employer",
+        "aliases": [
+          "工作单位",
+          "单位名称",
+          "所在单位",
+          "employer"
+        ]
+      },
+      {
+        "key": "jobTitle",
+        "aliases": [
+          "职务名称",
+          "职务",
+          "职位",
+          "job title"
+        ]
+      },
+      {
+        "key": "employed",
+        "aliases": [
+          "是否在岗",
+          "在岗状态",
+          "是否在职",
+          "employment status"
+        ]
+      },
+      {
+        "key": "politicalStatus",
+        "aliases": [
+          "政治面貌",
+          "亲属政治面貌",
+          "political status"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>匿名通用记录夹具</title></head><body>
+<section data-resume-repeat="educations"><h2>教育经历</h2><button type="button" data-add-record>添加</button><div id="rows"></div></section>
+<script>
+const section = document.querySelector("section");
+section.querySelector("button").addEventListener("click", () => {
+  const row = document.createElement("div"); row.dataset.repeatItem = "educations";
+  row.innerHTML = '<label>学校名称<input></label><label>院系名称<input></label><label>专业名称<input></label><label>学历<select><option value="">请选择</option><option>硕士研究生</option><option>本科</option></select></label><label>学位<select><option value="">请选择</option><option>硕士</option><option>学士</option></select></label><label>入学时间<input type="month"></label><label>毕业时间<input type="month"></label><button type="button">删除本组</button>';
+  row.querySelector("button").addEventListener("click", () => row.remove());
+  document.querySelector("#rows").append(row);
+});
+</script></body></html>

@@ -1,0 +1,33 @@
+<!doctype html><html data-sany-anonymous="date-v1"><meta charset="utf-8"><title>Sany anonymous day precision</title>
+<style>body{font:16px sans-serif}.form-item{margin:12px}.common-unmodeled-layer{position:fixed;top:5px;right:5px;background:white;padding:10px;border:1px solid;z-index:10}</style>
+<main class="form-root"></main><script src="/chinalife-zhiye-controls.js"></script><script>
+for(const key of Object.keys(specs))delete specs[key];
+specs.basic=['个人信息',[['birth','出生日期','day'],['graduation','毕业时间','day']]];
+specs.projects=['项目经历',[['start','开始时间','day'],['end','结束时间','day']]];
+ChinalifeFixture.reset();
+for(const item of document.querySelectorAll('.form-item')){
+ const label=item.querySelector('label'),title=document.createElement('div'),control=document.createElement('div');title.className='form-item__title form-item__title--right';control.className='form-item__control';title.append(label);
+ const select=item.querySelector('.phoenix-select');select.classList.add('phoenix-select--editable','phoenix-select--borderColorable','phoenix-select--large');select.querySelector('input').classList.add('phoenix-select__input--large','phoenix-select__input--unText');
+ const outer=document.createElement('div');outer.className='phoenix-unmodeled-layer block';outer.innerHTML='<div class="phoenix-unmodeled-layer__inner"><div class="phoenix-unmodeled-layer__protect"><div class="phoenix-unmodeled-layer__content phoenix-unmodeled-layer__content--block"></div></div></div>';outer.querySelector('.phoenix-unmodeled-layer__content').append(select);control.append(outer);item.append(title,control);
+ // DOM expando remains on the old fiber; only root.current is authoritative.
+ const input=select.querySelector('input'),attached=input.__reactFiberAnonymous,live={memoizedProps:{...attached.memoizedProps},return:null,alternate:attached},oldRoot={tag:3},newRoot={tag:3},state={current:newRoot};
+ attached.memoizedProps={mode:'month',format:'YYYY-MM'};attached.alternate=live;attached.return=oldRoot;live.return=newRoot;oldRoot.child=attached;newRoot.child=live;oldRoot.alternate=newRoot;newRoot.alternate=oldRoot;oldRoot.stateNode=newRoot.stateNode=state;
+ const click=select.onclick;select.onclick=event=>{click(event);const instance=attached.return.stateNode;if(instance?.containerRef){const oldOwner={memoizedProps:{},stateNode:null,return:oldRoot},liveOwner={memoizedProps:{},stateNode:instance,return:newRoot};oldOwner.alternate=liveOwner;liveOwner.alternate=oldOwner;attached.return=oldOwner;live.return=liveOwner;oldOwner.child=attached;liveOwner.child=live;oldRoot.child=oldOwner;newRoot.child=liveOwner;}};
+ input.sanyLive=live;
+}
+document.addEventListener('SANY_ANONYMOUS_FAULT',event=>{
+ const f=JSON.parse(event.detail),input=document.querySelector(`[data-key="${f.key||'start'}"] input`);
+ if(f.kind==='format')input.sanyLive.memoizedProps={mode:'date',format:f.value};
+ if(f.kind==='owner')input.sanyLive.return.stateNode.containerRef.current=document.createElement('div');
+ if(f.kind==='twoOwners'){
+  const instance=input.sanyLive.return.stateNode,extra=document.createElement('div'),content=document.createElement('div');extra.className='common-unmodeled-layer';content.className='common-unmodeled-layer__layerContent';extra.append(content);document.body.append(extra);
+  instance.triggerRef.current._component.rootNode=document.querySelector('.common-unmodeled-layer');instance.layerRef.wrapperRef.current=content;
+ }
+ if(f.kind==='sharedOwner'){
+  const other=document.querySelector('[data-key=end] input'),live=other.sanyLive,root=live.return,attached=live.alternate,oldRoot=attached.return;
+  const owner={memoizedProps:{},stateNode:{...input.sanyLive.return.stateNode,containerRef:{current:other.closest('.phoenix-select')}},return:root,child:live},oldOwner={memoizedProps:{},stateNode:null,return:oldRoot,child:attached};
+  owner.alternate=oldOwner;oldOwner.alternate=owner;oldRoot.child=oldOwner;attached.return=oldOwner;root.child=owner;live.return=owner;
+ }
+});
+globalThis.SanyFixtureReady=true;
+</script><script src="/src/content/sany.js"></script><script src="/src/content/chinalife-readback.js"></script></html>

@@ -1,0 +1,21 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>匿名大类模块回归</title>
+<style>label { display:block; margin:8px } input { width:260px } iframe { width:1200px; height:800px }</style>
+<section data-resume-repeat="relationships"><h2>亲属关系</h2><button id="add">添加</button><div id="rows"></div></section>
+<script>
+document.querySelector('#add').onclick = () => {
+  const row = document.createElement('div'); row.dataset.repeatItem = 'relationships';
+  row.innerHTML = '<label>姓名<input></label><label>联系电话<input></label><button>删除本组</button>';
+  row.querySelector('button').onclick = () => row.remove(); document.querySelector('#rows').append(row);
+};
+globalThis.chrome = { runtime: { onMessage: { addListener(fn) { globalThis.__resumeHelperListener = fn; } } } };
+</script>
+<script src="/src/shared/matcher-core.js"></script><script src="/src/shared/category-runtime.js"></script><script src="/src/content/fill.js"></script>
+<script type="module">
+import { runCategoryModules } from '/category-module-scenarios.js';
+globalThis.__recordRunner = runCategoryModules().then(result => {
+  globalThis.__recordProgress=result; document.documentElement.dataset.recordRunner='done'; return result;
+}).catch(error => {
+  const result={error:error.stack,checks:globalThis.__recordProgress?.checks || []};
+  globalThis.__recordProgress=result; document.documentElement.dataset.recordRunner='error'; return result;
+});
+</script></html>

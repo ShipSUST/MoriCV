@@ -1,0 +1,40 @@
+<!doctype html><html data-sany-anonymous="date-v1"><meta charset="utf-8"><title>Sany anonymous paper editor</title>
+<style>body{font:16px sans-serif}.form-item{margin:12px}input{min-height:24px}.common-unmodeled-layer{position:fixed;top:5px;right:5px;background:white;padding:10px;border:1px solid;z-index:10}</style>
+<main class="form-root"></main><script src="/chinalife-zhiye-controls.js"></script><script>
+for(const key of Object.keys(specs))delete specs[key];
+// Labels, wrapper topology and checked paper/yes state observed on the real
+// editor. Fictional profile values are provided through siteProfile by runner.
+specs.papers=['论文/专著',[['hasPapers','是否有论文/专利成果','radio'],['kind','成果类型','radio'],['name','论文名称'],['authorOrder','作者顺序','choice',['一作/共一','二作','通讯作者','其他']],['type','期刊类型','choice',['顶级期刊/会议论文','SCI/SSCI/EI/CSSCI/核心期刊论文','普通期刊/会议论文','其他']],['description','论文简介','textarea']]];
+ChinalifeFixture.reset();
+for(const section of document.querySelectorAll('[data-anonymous-section]')){
+ const forms=Array.from(section.querySelectorAll('div.form[id]')),ux=forms[0].parentElement;
+ for(const form of forms){form.querySelector('.form-part-body').className='form-part';ux.append(form);}
+ for(const record of section.querySelectorAll('.record'))if(!record.contains(ux))record.remove();
+}
+for(const item of document.querySelectorAll('.form-item')){
+ const label=item.querySelector('label'),title=document.createElement('div'),control=document.createElement('div');
+ title.className='form-item__title';control.className='form-item__control';title.append(label);
+ for(const child of Array.from(item.children))control.append(child);item.append(title,control);
+ const radios=item.querySelectorAll('.phoenix-radio');
+ if(item.dataset.key==='kind')Array.from(item.querySelectorAll('.phoenix-radio__radio-text')).forEach((node,index)=>node.textContent=index?'专利':'论文');
+ if(radios.length)radios[0].click();
+ const select=item.querySelector('.phoenix-select');if(!select)continue;
+ select.classList.add('phoenix-select--editable');
+ const wrapper=document.createElement('div');wrapper.className='phoenix-unmodeled-layer block';
+ wrapper.innerHTML='<div class="phoenix-unmodeled-layer__inner"><div class="phoenix-unmodeled-layer__protect"><div class="phoenix-unmodeled-layer__content"></div></div></div>';
+ wrapper.querySelector('.phoenix-unmodeled-layer__content').append(select);control.append(wrapper);
+}
+document.addEventListener('MORI_CV_CHINALIFE_READ',event=>{
+ const target=event.target,layer=target.closest?.('.common-unmodeled-layer');
+ const input=target.matches?.('.phoenix-select__input')?target:layer?.fixtureOwner;
+ if(!input?.__reactFiberAnonymous)return;
+ const currentLayer=Array.from(document.querySelectorAll('.common-unmodeled-layer')).find(popup=>popup.fixtureOwner===input);
+ const root={tag:3,stateNode:null,child:null};root.stateNode={current:root};
+ const attached=input.__reactFiberAnonymous,existing=attached.return;
+ const owner=existing?.stateNode?.containerRef?existing:{memoizedProps:{},stateNode:null};
+ owner.return=root;root.child=owner;
+ const frames=[attached,...Array.from(currentLayer?.querySelectorAll('*')||[]).filter(node=>node.__reactFiberAnonymous).map(node=>node.__reactFiberAnonymous)];
+ owner.child=frames[0];frames.forEach((fiber,index)=>{fiber.return=owner;fiber.sibling=frames[index+1]||null;});
+},true);
+globalThis.SanyFixtureReady=true;
+</script><script src="/src/content/sany.js"></script><script src="/src/content/chinalife-readback.js"></script></html>
